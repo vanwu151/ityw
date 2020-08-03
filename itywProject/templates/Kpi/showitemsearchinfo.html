@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>IT资产管理系统</title>
+    <link rel="shortcut icon" href="/static/Kpi/img/text.ico" type="image/x-icon">
+    
+
+<!-- css file -->
+<link href="/static/Kpi/css/bootstrap.min.css" rel="stylesheet">
+<link href="/static/Kpi/css/font-awesome.min.css" rel="stylesheet">
+<link href="/static/Kpi/css/toastr.min.css" rel="stylesheet">
+<link href="/static/Kpi/css/sweetalert.css" rel="stylesheet">
+<link href="/static/Kpi/css/style.css" rel="stylesheet">
+<link href="/static/Kpi/css/jquery.validator.css" rel="stylesheet">
+<link href="/static/Kpi/css/datatables.min.css" rel="stylesheet">
+<!-- scripts -->
+<script src="/static/Kpi/js/jquery-2.1.1.js"></script>
+<script src="/static/Kpi/js/sweetalert.min.js"></script>
+<script src="/static/Kpi/js/bootstrap.min.js"></script>
+<script src="/static/Kpi/js/datatables.min.js"></script>
+    <link href="/static/Kpi/css/jumpserver.css" rel="stylesheet">
+    
+    <link href="/static/Kpi/css/sweetalert.css" rel="stylesheet">
+    <script src="/static/Kpi/js/sweetalert.min.js"></script>
+
+</head>
+
+<body>
+<div id="wrapper">
+    <nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            
+
+<li class="nav-header">
+    <div class="dropdown profile-element">
+        <div target="_blank">
+            <img alt="logo" height="55" width="55" src="/static/Kpi/img/logo.png" style="margin-left: 40px">
+            <span class="nav-label">IT资产管理系统</span><span class="label label-info pull-right"></span>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+</li>
+                
+<li>
+    <a>
+        <span class="nav-label"></span><span class="label label-info pull-right"></span>
+    </a>
+</li>
+
+<li id="users" class="active">
+    <a>
+        <span class="nav-label">资产查询信息</span><span class="label label-info pull-right"></span>
+    </a>
+</li>
+            
+        </ul>
+    </div>
+</nav>
+
+    <div id="page-wrapper" class="gray-bg">
+        
+        
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="panel-options">
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a class="text-center"> {{ userinfo.item_sn }}资产查询信息 </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="tab-content">
+                        <div class="col-sm-8" style="padding-left: 0;">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <h5>{{ userinfo.info }}</h5>
+                                    <span class="label label-primary"><b>{{ userinfo.item_sn }}</b></span>
+                                </div>
+                                <div class="ibox-content">
+                                    <div class="text-left">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr class="no-borders-tr">
+                                                    <td class="text-navy">资产入库日期</td>
+                                                    <td>{{ userinfo.item_inbound_date|date:"Y-m-d" }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-navy">资产名称</td>
+                                                    <td>{{ userinfo.item_name }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-navy">资产当前状态</td>
+                                                    <td>{{ userinfo.item_statu }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-navy">资产编号/号码</td>
+                                                    <td>{{ userinfo.item_sn }}</td>
+                                                </tr>
+                                            
+                                                <tr>
+                                                    <td class="text-navy">资产现在位置</td>
+                                                    <td>{{ userinfo.item_location }}</td>
+                                                </tr>
+                                                <tr>                                                
+                                                    <td class="text-navy">现在用户</td> 
+                                                    <td>{{ userinfo.item_now_user }}</td>        
+                                                </tr>
+                                                <tr>                                                
+                                                    <td class="text-navy">现在用户工号</td> 
+                                                    <td>{{ userinfo.item_now_user_workid }}</td>        
+                                                </tr>
+                                                <tr>                                                
+                                                    <td class="text-navy">资产概况</td> 
+                                                    <td>{{ userinfo.item_info }}</td>        
+                                                </tr>
+                                                <tr>                                                
+                                                    <td class="text-navy">资产变更记录</td> 
+                                                    <td>
+                                                        {% for item_change_date, item_pass_user, item_now_user, item_now_user_workid, item_statu, item_change_info in userinfo.ItemChangeInfoList %}                                                            
+                                                            {{ item_change_date|date:"Y-m-d" }}： 由用户“{{ item_pass_user }}”
+                                                            变更给用户“{{ item_now_user }}”工号“{{ item_now_user_workid }}”，变更资产状态为“{{ item_statu }}”,
+                                                            变更后的资产概况为“{{ item_change_info }}”<br />
+                                                        {% endfor %}                                                                                                                      
+                                                    </td>        
+                                                </tr>
+                                        </tbody></table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <div class="footer fixed">
+    <div class="pull-right">
+        Version <strong>1.0.1</strong>
+    </div>
+    <div>
+        <strong>Copyright</strong> :van.w © 2020
+    </div>
+</div>
+
+    </div>
+</div>
+
+</body></html>
