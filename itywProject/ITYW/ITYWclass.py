@@ -719,18 +719,20 @@ class getModedItemInfo(getItemDetail):
                     item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info)
                     s.save()  # 更新资产变更表
                     q_i_i = i_i.objects.get( item_sn = self.item_sn )
+                    item_old_location = q_i_i.item_location
                     q_i_i.item_statu = self.item_statu
                     q_i_i.item_location = self.item_change_location
                     q_i_i.item_now_user = self.item_now_user
                     q_i_i.item_now_user_workid = self.item_now_user_workid
                     q_i_i.item_info = self.item_change_info
                     q_i_i.save()
+                    if OldItemDetailData['userinfo']['item_statu'] == '闲置':
+                        old_i_s =  i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = item_old_location )[0]                   
+                        item_stock_num_now = old_i_s.item_stock_num - 1
+                        old_i_s.item_stock_num = item_stock_num_now
+                        old_i_s.save()
                     try:                    
-                        q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = self.item_change_location )[0] # 更新该部门闲置物资库存
-                        if OldItemDetailData['userinfo']['item_statu'] == '闲置':                    
-                            item_stock_num_now = q_i_s.item_stock_num - 1
-                            q_i_s.item_stock_num = item_stock_num_now
-                            q_i_s.save()
+                        q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = self.item_change_location )[0] # 更新该部门闲置物资库存                        
                     except:  # 无库存则生成库存记录
                         Saveitemstock = i_s(item_kind = editingItemKind, item_stock_location = self.item_change_location, item_stock_num = 0, item_destory_num = 0)
                         Saveitemstock.save()
@@ -848,7 +850,6 @@ class getModedItemInfo(getItemDetail):
                                 pass
                             nowUserItemRec.user_otheritems = now_user_otheritems_list_new
                 if editingItemKind == '台式电脑':
-                    print('testtetst111')
                     try:                    
                         testPc = u_i_i.objects.get( user_workid = self.item_now_user_workid ).user_pc_sn
                     except:
@@ -856,7 +857,6 @@ class getModedItemInfo(getItemDetail):
                             testPc = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_change_location )[0].user_pc_sn
                         except:
                             pass
-                    print('testPc', testPc)
                     try:   # 如果现用户底下有资产
                         testPcStatu = i_i.objects.get( item_sn = testPc ).item_statu
                         if testPc != '' and testPc != self.item_sn and testPcStatu != '闲置':  # 变更现用户原资产信息                          
@@ -1098,7 +1098,14 @@ class getModedItemInfo(getItemDetail):
                         q_i_s.save()
                     except:  # 无库存则生成库存记录
                         Saveitemstock = i_s(item_kind = editingItemKind, item_stock_location = self.item_change_location, item_stock_num = 1, item_destory_num = 0)
-                        Saveitemstock.save()                
+                        Saveitemstock.save()
+                    q_i_i = i_i.objects.get( item_sn = self.item_sn )
+                    q_i_i.item_statu = self.item_statu
+                    q_i_i.item_location = self.item_change_location
+                    q_i_i.item_now_user = self.item_now_user
+                    q_i_i.item_now_user_workid = self.item_now_user_workid
+                    q_i_i.item_info = self.item_change_info
+                    q_i_i.save()               
                     if self.item_now_user == OldItemDetailData['userinfo']['item_pass_user']:  # 如果用户未变
                         if self.item_change_location == OldItemDetailData['userinfo']['item_location']:  # 如果资产所在位置未变                        
                             info = '{}已变更！'.format(self.item_sn)                        
@@ -1238,7 +1245,6 @@ class getModedItemInfo(getItemDetail):
                         nowItemInfoRc.item_now_user = self.item_now_user
                         nowItemInfoRc.item_now_user_workid = self.item_now_user_workid
                         nowItemInfoRc.save()
-                        print('000here',nowUserItemRec)
                         now_user_pc_list = nowUserItemRec.user_pc_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                         now_user_pc_list_new = now_user_pc_list.split(',')
                         now_user_pc_list_new.append(self.item_sn)
