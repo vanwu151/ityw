@@ -333,234 +333,7 @@ def itemstockinfo(request):
 
 
 
-def Editstufftarget(request):
-    if request.session.get('is_login',None):
-        if request.method == "POST":
-            try:
-                name = request.session['username']
-                q = ui.objects.get( user_name = name )
-                ad = q.user_role
-                department = q.user_department
-                phone = q.user_phone
-            except:
-                pass
-            try:
-                action = request.POST.get('action')
-                todayYearMonth = datetime.today().strftime('%Y-%m')
-                kaoheInfoMonth = datetime.strptime(todayYearMonth, '%Y-%m')
-                todayYear  = datetime.today().strftime('%Y')         #格式化str格式输出今天是几年
-                todayMonth = datetime.today().strftime('%m')         #格式化str格式输出今天是几月
-                departmentStuff = ui.objects.filter( user_department = department ).exclude( user_name = name )      #部门员工清单               
-                if action == "OK":
-                    if ad == 'manager':
-                        userrole = '部门经理'
-                        stuffTargetScore = request.POST.get('stufftarget')
-                        print(stuffTargetScore)
-                        stuffName = request.POST.get('editstuffname')
-                        print(stuffName)
-                        if stuffTargetScore != '' or stuffTargetScore != '0':    # 判断目标工时用户填入是否为0或者''空
-                            stuffNowScore = sc.objects.filter( score_datetime__year = '{}'.format(todayYear) ).filter( score_datetime__month = '{}'.format(todayMonth)).filter( score_user = stuffName ).aggregate(Sum('score_pre'))['score_pre__sum']
-                            if stuffNowScore != None:      # 判断现有工时是否为空，若不为空
-                                stuffNowScore = round( stuffNowScore/60, 2)      
-                                fi = str(round((stuffNowScore/int(stuffTargetScore)), 2)*100)       # 计算现有工时与目标工时的完成百分比
-                                stuffFiprecent = fi + '%'
-                            else:                   #若为空
-                                stuffNowScore = 0   # 如果修改的考核工时不为空或0 计算百分比
-                                fi = str(round((stuffNowScore/int(stuffTargetScore)), 2)*100)       # 计算现有工时与目标工时的完成百分比
-                                stuffFiprecent = fi + '%'
-                            tki = ki( kaoheinfo_user=stuffName, kaoheinfo_department=department, kaoheinfo_month=kaoheInfoMonth, kaoheinfo_monthtarget=int(stuffTargetScore), kaoheinfo_monthtotal=stuffNowScore, kaoheinfo_monthfiprecent=stuffFiprecent )
-                            tki.save()    # 保存 以上的所有信息到kaoheinfo表中
-                            info = "{}：{}考核目标已添加！".format(stuffName, todayYearMonth)
-                if action == "修改":
-                    if ad == 'manager':
-                        userrole = '部门经理'
-                        stuffTargetScore = request.POST.get('stufftarget')
-                        stuffName = request.POST.get('editstuffname')
-                        request.session['edstufftarget'] = ki.objects.filter( kaoheinfo_month=kaoheInfoMonth ).filter( kaoheinfo_department = department ).filter( kaoheinfo_user=stuffName ).last().kaoheinfo_monthtarget   # 将原考核目标时长存入session
-                        if stuffTargetScore != '' or stuffTargetScore != '0':    # 判断目标工时用户填入是否为0或者''空
-                            stuffNowScore = sc.objects.filter( score_datetime__year = '{}'.format(todayYear) ).filter( score_datetime__month = '{}'.format(todayMonth)).filter( score_user = stuffName ).aggregate(Sum('score_pre'))['score_pre__sum']
-                            if stuffNowScore != None:      # 判断现有工时是否为空，若不为空
-                                stuffNowScore = round( stuffNowScore/60, 2)      
-                                fi = str(round((stuffNowScore/int(stuffTargetScore)), 2)*100)       # 计算现有工时与目标工时的完成百分比
-                                stuffFiprecent = fi + '%'
-                            else:                   #若为空
-                                stuffNowScore = 0   # 如果修改的考核工时不为空或0 计算百分比
-                                fi = str(round((stuffNowScore/int(stuffTargetScore)), 2)*100)       # 计算现有工时与目标工时的完成百分比
-                                stuffFiprecent = fi + '%'
-                            etk = ki.objects.filter( kaoheinfo_month=kaoheInfoMonth ).filter( kaoheinfo_user=stuffName  ).filter( kaoheinfo_department = department ).last()  # 之编辑当前用户当年月的最后一条记录
-                            etk.kaoheinfo_monthtarget = int(stuffTargetScore)
-                            etk.kaoheinfo_monthtotal = stuffNowScore
-                            etk.kaoheinfo_monthfiprecent = stuffFiprecent
-                            etk.kaoheinfo_department = department
-                            etk.save()
-                            info = "{}：{}考核目标已修改！".format(stuffName, todayYearMonth)
-            except:     # 如果出现目标考核工时为0的异常时
-                info = '目标值不得为空或者0！'
-            managerview = showManagerInfo(departmentStuff, userrole, info, name, kaoheInfoMonth, department, todayYear, todayMonth, phone)
-            managerInfoData = managerview.getManagerInfoData()
-            return render(request, 'Kpi/showmanagerinfo.html', managerInfoData)
-
-
-def Edittarget(request):
-    if request.session.get('is_login',None):
-        if request.method == "POST":
-            try:
-                name = request.session['username']
-                q = ui.objects.get( user_name = name )
-                ad = q.user_role
-                department = q.user_department
-                phone = q.user_phone
-            except:
-                pass
-            try:
-                action = request.POST.get('action')
-                todayYearMonth = datetime.today().strftime('%Y-%m')
-                kaoheInfoMonth = datetime.strptime(todayYearMonth, '%Y-%m')
-                todayYear  = datetime.today().strftime('%Y')         #格式化str格式输出今天是几年
-                todayMonth = datetime.today().strftime('%m')         #格式化str格式输出今天是几月
-                departmentStuff = ui.objects.filter( user_department = department ).exclude( user_name = name )      #部门员工清单
-                if action == "OK":
-                    if ad == 'manager':
-                        userrole = '部门经理'
-                        kaoheMonthTargetScore = request.POST.get('target')
-                        if kaoheMonthTargetScore != '' or kaoheMonthTargetScore != '0':    # 判断目标工时用户填入是否为0或者''空
-                            kaoheNowScore = sc.objects.filter( score_datetime__year = '{}'.format(todayYear) ).filter( score_datetime__month = '{}'.format(todayMonth)).filter( score_user = name ).aggregate(Sum('score_pre'))['score_pre__sum']
-                            if kaoheNowScore != None:      # 判断现有工时是否为空，若不为空
-                                kaoheNowScore = round( kaoheNowScore/60, 2)      
-                                fi = str(round((kaoheNowScore/int(kaoheMonthTargetScore)), 2)*100)       # 计算现有工时与目标工时的完成百分比
-                                kaoheMonthFiprecent = fi + '%'
-                            else:                   #若为空
-                                kaoheNowScore = 0   # 如果修改的考核工时不为空或0 计算百分比
-                                fi = str(round((kaoheNowScore/int(kaoheMonthTargetScore)), 2)*100)
-                                kaoheMonthFiprecent = fi + '%'     # 完成百分比为0
-                            tki = ki( kaoheinfo_user=name, kaoheinfo_department=department, kaoheinfo_month=kaoheInfoMonth, kaoheinfo_monthtarget=int(kaoheMonthTargetScore), kaoheinfo_monthtotal=kaoheNowScore, kaoheinfo_monthfiprecent=kaoheMonthFiprecent )
-                            tki.save()    # 保存 以上的所有信息到kaoheinfo表中
-                            info = "{}：{}考核目标已添加！".format(name, todayYearMonth)
-                if action == "修改":
-                    if ad == 'manager':
-                        userrole = '部门经理'
-                        kaoheMonthTargetScore = request.POST.get('target')
-                        request.session['edkhtarget'] = ki.objects.filter( kaoheinfo_month=kaoheInfoMonth ).filter( kaoheinfo_user=name ).filter( kaoheinfo_department = department ).last().kaoheinfo_monthtarget   # 将原考核目标时长存入session
-                        print(kaoheMonthTargetScore, type(kaoheMonthTargetScore))
-                        if kaoheMonthTargetScore != '' or kaoheMonthTargetScore != '0':     # 如果修改的目标考核时长不为空或0
-                            kaoheNowScore = sc.objects.filter( score_datetime__year = '{}'.format(todayYear) ).filter( score_datetime__month = '{}'.format(todayMonth)).filter( score_user = name ).aggregate(Sum('score_pre'))['score_pre__sum']
-                            print(kaoheNowScore,type(kaoheNowScore))
-                            if kaoheNowScore != None:      # 判断现有工时是否为空，若不为空
-                                kaoheNowScore = round( kaoheNowScore/60, 2)      
-                                fi = str(round((kaoheNowScore/int(kaoheMonthTargetScore)), 2)*100)       # 计算现有工时与目标工时的完成百分比
-                                kaoheMonthFiprecent = fi + '%'
-                            else:                   #若为空
-                                kaoheNowScore = 0      # 初始化现有考核时长为0 
-                                fi = str(round((kaoheNowScore/int(kaoheMonthTargetScore)), 2)*100)  #如果修改的考核工时不为空或0 计算百分比
-                                kaoheMonthFiprecent = fi + '%'     # 完成百分比为0
-                            etk = ki.objects.filter( kaoheinfo_month=kaoheInfoMonth ).filter( kaoheinfo_user=name ).last()  # 之编辑当前用户当年月的最后一条记录
-                            etk.kaoheinfo_monthtarget = int(kaoheMonthTargetScore)
-                            etk.kaoheinfo_monthtotal = kaoheNowScore
-                            etk.kaoheinfo_monthfiprecent = kaoheMonthFiprecent
-                            etk.save()
-                            info = "{}：{}考核目标已修改！".format(name, todayYearMonth)
-            except:     # 如果出现目标考核工时为0的异常时
-                info = '目标值不得为空或者0！'
-            managerview = showManagerInfo(departmentStuff, userrole, info, name, kaoheInfoMonth, department, todayYear, todayMonth, phone)
-            managerInfoData = managerview.getManagerInfoData()
-            return render(request, 'Kpi/showmanagerinfo.html', managerInfoData)
-
-
-
-def rules(request):
-    if request.session.get('is_login',None):
-        if request.method == "GET":
-            name = request.session['username']
-            kpiInfoView = getKpiRules(name)
-            kpiInfoData = kpiInfoView.getKpiRulesData()
-            if kpiInfoData['userinfo']['role'] == 'manager':
-                return render(request, 'Kpi/showkaoherulesinfo.html', kpiInfoData)
-            else:
-                return render(request, 'Kpi/showrulesinfo.html', kpiInfoData)
-
-
-
-def AddRules(request):
-    if request.session.get('is_login',None):
-        if request.method == "POST":
-            try:
-                name = request.session['username']
-                q = ui.objects.get( user_name = name )
-                department = q.user_department
-                action = request.POST.get('action')
-                if action == "新增":
-                    kind=request.POST.get('kaohe_kind')                                                      
-                    kaoheName = request.POST.get('kaohe_name')
-                    kaoheScore = request.POST.get('kaohe_score')
-                    AddedRulesView = getAddedRules(name, kind = kind, kaoheName = kaoheName , kaoheScore = kaoheScore , department = department)
-                    AddedRulesData = AddedRulesView.getAddedRulesData()
-                    return render(request, 'Kpi/showkaoherulesinfo.html', AddedRulesData)
-            except:
-                pass
-
-def EditRules(request):
-    if request.session.get('is_login',None):
-        if request.method == "POST":
-            try:
-                name = request.session['username']
-                q = ui.objects.get( user_name = name )
-                department = q.user_department
-                test = kh.objects.filter( kaohe_department = department).exists()  #判断该部门是否有考核事项
-                if test:
-                    action = request.POST.get('action')
-                    try:
-                        if action == "删除":
-                            editkaoheName = request.POST.get('editkaohename')
-                            deletedRulesView = getEditedRules(name, editkaoheName = editkaoheName)
-                            deletedRulesData = deletedRulesView.getDeledRulesData()
-                            return render(request, 'Kpi/showkaoherulesinfo.html', deletedRulesData)
-                        if action == "编辑":
-                            editkaoheName = request.POST.get('editkaohename')
-                            request.session['editkaohename'] = editkaoheName
-                            editedKaoheRulesView = getEditedRules(name, editkaoheName = editkaoheName)
-                            editedKaoheRulesData = editedKaoheRulesView.getEditedRulesData()
-                            return render(request, 'Kpi/showkaoherulesinfo.html', editedKaoheRulesData)
-                        if action == "保存":
-                            savekind = request.POST.get('kaohe_kind')
-                            savename = request.POST.get('kaohe_name')
-                            savekaoheScore = request.POST.get('kaohe_score')
-                            edkhname = request.session['editkaohename']
-                            savedKaoheRulesView = getEditedRules(name, kind = savekind, kaoheName = savename, kaoheScore = savekaoheScore, editkaoheName = edkhname)
-                            savedKaoheRulesData = savedKaoheRulesView.getSavedRulesData()
-                            return render(request, 'Kpi/showkaoherulesinfo.html', savedKaoheRulesData)
-                    except:
-                        pass
-                else:    #该部门无考核规则
-                    kpiInfoView = getKpiRules(name)
-                    kpiInfoData = kpiInfoView.getKpiRulesData()
-                    return render(request, 'Kpi/showkaoherulesinfo.html', kpiInfoData)
-            except:
-                pass
-
-
-def managerkaohe(request):
-    if request.session.get('is_login',None):
-        num = request.GET.get('index','1')
-        request.session['index'] = num
-        try:
-            pageSep = request.session['pageSep']
-        except:
-            pageSep = 10       
-        if request.method == "GET":
-            todayYear  = datetime.today().strftime('%Y')         #格式化str格式输出今天是几年
-            todayMonth = datetime.today().strftime('%m')         #格式化str格式输出今天是几月
-            try:
-                name = request.session['username']
-                getUserScoresViews = getUserScore(name, num = num, todayYear = todayYear, todayMonth = todayMonth, pageSep = pageSep)
-                getUserScoresData = getUserScoresViews.getUserScoreData()                
-                if getUserScoresData['userinfo']['roles'] == 'manager':
-                    return render(request, 'Kpi/showmanagerkaoheinfo.html', getUserScoresData)
-                else:
-                    return render(request, 'Kpi/showkaoheinfo.html', getUserScoresData)
-            except:
-                pass
-
-def PageFunc(request):
+def PageItemInfo(request):
     if request.session.get('is_login',None):
         try:
             num = request.session['index']
@@ -568,109 +341,49 @@ def PageFunc(request):
             num = '1'
         if request.method == "POST":
             pageSep = int(request.POST.get('PageLength'))
-            request.session['pageSep'] = pageSep    # 将一页展示多少行数存入session     
-            todayYear  = datetime.today().strftime('%Y')         #格式化str格式输出今天是几年
-            todayMonth = datetime.today().strftime('%m')         #格式化str格式输出今天是几月
+            request.session['pageSep'] = pageSep    # 将一页展示多少行数存入session
+            name = request.session['username']
+            getItemInfoView = getItemInfo(name = name, num = num, pageSep = pageSep)
+            getItemInfoData = getItemInfoView.getItemInfoData()
             try:
-                name = request.session['username']
-                getUserScoresViews = getUserScore(name, num = num, todayYear = todayYear, todayMonth = todayMonth, pageSep = pageSep)
-                getUserScoresData = getUserScoresViews.getUserScoreData()                
-                if getUserScoresData['userinfo']['roles'] == 'manager':
-                    return render(request, 'Kpi/showmanagerkaoheinfo.html', getUserScoresData)
-                else:
-                    return render(request, 'Kpi/showkaoheinfo.html', getUserScoresData)
+                return render(request, 'Kpi/showmanageiteminfo.html', getItemInfoData)
             except:
-                pass
+                pass 
 
-
-def AddEvent(request):
+def PageUserItem(request):
     if request.session.get('is_login',None):
         try:
             num = request.session['index']
         except:
             num = '1'
-        try:
-            pageSep = request.session['pageSep']
-        except:
-            pageSep = 10
         if request.method == "POST":
-            todayYear  = datetime.today().strftime('%Y')         #格式化str格式输出今天是几年
-            todayMonth = datetime.today().strftime('%m')         #格式化str格式输出今天是几月
+            pageSep = int(request.POST.get('PageLength'))
+            request.session['pageSep'] = pageSep    # 将一页展示多少行数存入session
+            name = request.session['username']
+            getUserItemsInfoView = getUserItemsInfo(name = name, num = num, pageSep = pageSep)
+            getUserItemsInfoData = getUserItemsInfoView.getUserItemsData()
             try:
-                name = request.session['username']
-                action = request.POST.get('action')
-                if action == "新增":
-                    eventTime = request.POST.get('date')
-                    requireDepartment = request.POST.get('requirement_department')
-                    requireUsername = request.POST.get('requirement_username')                                                    
-                    events = request.POST.get('events')                   
-                    kind = request.POST.get('kind')
-                    UserAddedScoreViews = getAddedUserScore(name , num = num, pageSep = pageSep, eventTime = eventTime, events = events, kind = kind, requireDepartment = requireDepartment, requireUsername = requireUsername, todayYear = todayYear, todayMonth = todayMonth)
-                    UserAddedScoreData = UserAddedScoreViews.getAddedUserScoreData()
-                    if UserAddedScoreData['userinfo']['roles'] == 'manager':
-                        return render(request, 'Kpi/showmanagerkaoheinfo.html', UserAddedScoreData)
-                    else:
-                        return render(request, 'Kpi/showkaoheinfo.html', UserAddedScoreData)
+                return render(request, 'Kpi/showuseriteminfo.html', getUserItemsInfoData)
             except:
-                pass
+                pass 
 
-def Editevents(request):
+def PageItemStock(request):
     if request.session.get('is_login',None):
         try:
             num = request.session['index']
         except:
             num = '1'
-        try:
-            pageSep = request.session['pageSep']
-        except:
-            pageSep = 10
         if request.method == "POST":
-            todayYear  = datetime.today().strftime('%Y')         #格式化str格式输出今天是几年
-            todayMonth = datetime.today().strftime('%m')         #格式化str格式输出今天是几月
+            pageSep = int(request.POST.get('PageLength'))
+            request.session['pageSep'] = pageSep    # 将一页展示多少行数存入session
+            name = request.session['username']
+            getItemStockInfoView = getItemStockInfo(name = name, num = num, pageSep = pageSep)
+            getItemStockInfoData = getItemStockInfoView.getItemStockData()
             try:
-                name = request.session['username']
-                action = request.POST.get('action')
-                if action == '更新':
-                    Editscoreid = request.POST.get('editscoreid')
-                    Editpre = request.POST.get('editpre')
-                    updatedUserScoreView = getEditedUserScore(name, num = num, pageSep = pageSep, Editscoreid = Editscoreid, Editpre = Editpre, todayYear = todayYear, todayMonth = todayMonth)
-                    updatedUserScoreData = updatedUserScoreView.getUpdatedUserScore()
-                    if updatedUserScoreData['userinfo']['roles'] == 'manager':
-                        return render(request, 'Kpi/showmanagerkaoheinfo.html', updatedUserScoreData)
-                    else:
-                        return render(request, 'Kpi/showkaoheinfo.html', updatedUserScoreData)
-                if action == '删除':
-                    Editscoreid = request.POST.get('editscoreid')
-                    deledUserScoreView = getEditedUserScore(name, num = num, pageSep = pageSep, Editscoreid = Editscoreid, todayYear = todayYear, todayMonth = todayMonth)
-                    deledUserScoreData = deledUserScoreView.getDeledUserScore()
-                    if deledUserScoreData['userinfo']['roles'] == 'manager':
-                        return render(request, 'Kpi/showmanagerkaoheinfo.html', deledUserScoreData)
-                    else:
-                        return render(request, 'Kpi/showkaoheinfo.html', deledUserScoreData)
-                if action == '编辑':
-                    editscoreid = request.POST.get('editscoreid')
-                    request.session['editscoreid'] = editscoreid
-                    editingUserScoreView = getEditedUserScore(name, num = num, pageSep = pageSep, Editscoreid = editscoreid, todayYear = todayYear, todayMonth = todayMonth)
-                    editingUserScoreData = editingUserScoreView.getEditingUserScore()
-                    if editingUserScoreData['userinfo']['roles'] == 'manager':
-                        return render(request, 'Kpi/showmanagerkaoheinfo.html', editingUserScoreData)
-                    else:
-                        return render(request, 'Kpi/showkaoheinfo.html', editingUserScoreData)
-                if action == '保存':
-                    saveTime = request.POST.get('date')
-                    saveid = request.session['editscoreid']
-                    saveEvents = request.POST.get('events')
-                    saveNamekind = request.POST.get('kind')
-                    saveReqDepartment = request.POST.get('requirement_department')
-                    saveReqUsername = request.POST.get('requirement_username')
-                    savedUserScoreView = getEditedUserScore(name, num = num, pageSep = pageSep, Editscoreid = saveid, saveTime = saveTime, events = saveEvents, kind = saveNamekind, requireDepartment = saveReqDepartment, requireUsername = saveReqUsername, todayYear = todayYear, todayMonth = todayMonth)
-                    savedUserScoreData = savedUserScoreView.getSavedUserScore()
-                    if savedUserScoreData['userinfo']['roles'] == 'manager':
-                        return render(request, 'Kpi/showmanagerkaoheinfo.html', savedUserScoreData)
-                    else:
-                        return render(request, 'Kpi/showkaoheinfo.html', savedUserScoreData)
+                return render(request, 'Kpi/showitemstockinfo.html', getItemStockInfoData)
             except:
-                pass
+                pass    
+
 
 
 def Manage(request):
