@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, HttpResponse
 from django.shortcuts import redirect
 from django.contrib.auth.hashers import make_password, check_password
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .models import admininfo as a_i
 from .models import useritemsinfo as u_i_i
@@ -69,6 +69,61 @@ class getItemInfo:
         except:
             pass
         return ItemInfoData
+
+class getSearchItemSn(getItemInfo):
+    """
+    回传搜索资产SN/名称的结果列表信息
+    
+    """
+    def __init__(self, **kwds):
+        getItemInfo.__init__(self,  pageSep = kwds['pageSep'], name = kwds['name'], num = kwds['num'])
+        self.SearchSn = kwds['SearchSn']
+
+    def getSearchItemSnData(self):
+        try:
+            testSnExists = i_i.objects.filter(Q(item_name__icontains=self.SearchSn)|Q(item_sn__icontains=self.SearchSn)).exists()
+            if testSnExists:
+                snII = i_i.objects.filter(Q(item_name__icontains=self.SearchSn)|Q(item_sn__icontains=self.SearchSn)).order_by( '-item_inbound_date' )
+                paginator = Paginator(snII, self.pageSep, 3)
+                # 值1：所有的数据
+                # 值2：每一页的数据
+                # 值3：当最后一页数据少于n条，将数据并入上一页
+                try:
+                    # 获取第几页
+                    number = paginator.page(self.num)                   
+                except PageNotAnInteger:
+                    # 如果输入的页码数不是整数，那么显示第一页数据
+                    number = paginator.page(1)
+                except EmptyPage:
+                    number = paginator.page(paginator.num_pages)
+                SearchItemSnData = {'userinfo': {'name': self.name,
+                                 'page': number,
+                                 'paginator':paginator, 
+                                 'pageSep': self.pageSep}}
+            else:
+                SearchItemSnDataList = []
+                paginator = Paginator(SearchItemSnDataList, self.pageSep, 3)
+                # 值1：所有的数据
+                # 值2：每一页的数据
+                # 值3：当最后一页数据少于n条，将数据并入上一页
+                try:
+                    # 获取第几页
+                    number = paginator.page(self.num)
+                except PageNotAnInteger:
+                    # 如果输入的页码数不是整数，那么显示第一页数据
+                    number = paginator.page(1)
+                except EmptyPage:
+                    number = paginator.page(paginator.num_pages)
+                info = '没有搜索到相关IT资产'
+                SearchItemSnData = {'userinfo': {'name': self.name,
+                                 'page': number,
+                                 'paginator':paginator, 
+                                 'pageSep': self.pageSep}}
+                SearchItemSnData['userinfo']['info'] = info
+        except:
+            pass
+        return SearchItemSnData
+
 
 class DeleteItemInfo(getItemInfo):
     """
@@ -1467,10 +1522,6 @@ class getSearchItemInfo:
             NoResaultInfo = {'userinfo': {'info': info,
                                 'item_sn': self.itemSearchSn}}
             return NoResaultInfo
-        
-
-
-
 
 
 class getUserItemsInfo:
@@ -1530,6 +1581,60 @@ class getUserItemsInfo:
             pass
         return UserItemsInfoData
 
+class getSearchUserItems(getUserItemsInfo):
+    """
+    回传搜索用户结果列表信息
+    
+    """
+    def __init__(self, **kwds):
+        getUserItemsInfo.__init__(self,  pageSep = kwds['pageSep'], name = kwds['name'], num = kwds['num'])
+        self.searchuser = kwds['searchuser']
+
+    def getSearchUserItemsData(self):
+        try:
+            testUserItemsExists = u_i_i.objects.filter(Q(user_name__icontains=self.searchuser)|Q(user_workid__icontains=self.searchuser)).exists()
+            if testUserItemsExists:
+                usII = u_i_i.objects.filter(Q(user_name__icontains=self.searchuser)|Q(user_workid__icontains=self.searchuser)).order_by( 'id' )
+                paginator = Paginator(usII, self.pageSep, 3)
+                # 值1：所有的数据
+                # 值2：每一页的数据
+                # 值3：当最后一页数据少于n条，将数据并入上一页
+                try:
+                    # 获取第几页
+                    number = paginator.page(self.num)                   
+                except PageNotAnInteger:
+                    # 如果输入的页码数不是整数，那么显示第一页数据
+                    number = paginator.page(1)
+                except EmptyPage:
+                    number = paginator.page(paginator.num_pages)
+                SearchUserItemsData = {'userinfo': {'name': self.name,
+                                 'page': number,
+                                 'paginator':paginator, 
+                                 'pageSep': self.pageSep}}
+            else:
+                SearchUserItemsDataList = []
+                paginator = Paginator(SearchUserItemsDataList, self.pageSep, 3)
+                # 值1：所有的数据
+                # 值2：每一页的数据
+                # 值3：当最后一页数据少于n条，将数据并入上一页
+                try:
+                    # 获取第几页
+                    number = paginator.page(self.num)
+                except PageNotAnInteger:
+                    # 如果输入的页码数不是整数，那么显示第一页数据
+                    number = paginator.page(1)
+                except EmptyPage:
+                    number = paginator.page(paginator.num_pages)
+                info = '没有搜索到相关用户资产信息'
+                SearchUserItemsData = {'userinfo': {'name': self.name,
+                                 'page': number,
+                                 'paginator':paginator, 
+                                 'pageSep': self.pageSep}}
+                SearchUserItemsData['userinfo']['info'] = info
+        except:
+            pass
+        return SearchUserItemsData
+
 
 class getItemStockInfo:
     """
@@ -1588,7 +1693,59 @@ class getItemStockInfo:
             pass
         return ItemStockData
 
-        
+class getSearchItemStockInfo(getItemStockInfo):
+    """
+    回传搜索用户结果列表信息
+    
+    """
+    def __init__(self, **kwds):
+        getItemStockInfo.__init__(self,  pageSep = kwds['pageSep'], name = kwds['name'], num = kwds['num'])
+        self.searchitemstockinfo = kwds['searchitemstockinfo']
+
+    def getSearchItemStockInfoData(self):
+        try:
+            testItemStockInfoExists = i_s.objects.filter(Q(item_kind__icontains=self.searchitemstockinfo)|Q(item_stock_location__icontains=self.searchitemstockinfo)).exists()
+            if testItemStockInfoExists:
+                sIS = i_s.objects.filter(Q(item_kind__icontains=self.searchitemstockinfo)|Q(item_stock_location__icontains=self.searchitemstockinfo)).order_by( 'id' )
+                paginator = Paginator(sIS, self.pageSep, 3)
+                # 值1：所有的数据
+                # 值2：每一页的数据
+                # 值3：当最后一页数据少于n条，将数据并入上一页
+                try:
+                    # 获取第几页
+                    number = paginator.page(self.num)                   
+                except PageNotAnInteger:
+                    # 如果输入的页码数不是整数，那么显示第一页数据
+                    number = paginator.page(1)
+                except EmptyPage:
+                    number = paginator.page(paginator.num_pages)
+                SearchItemStockInfoData = {'userinfo': {'name': self.name,
+                                 'page': number,
+                                 'paginator':paginator, 
+                                 'pageSep': self.pageSep}}
+            else:
+                SearchItemStockInfoDataList = []
+                paginator = Paginator(SearchItemStockInfoDataList, self.pageSep, 3)
+                # 值1：所有的数据
+                # 值2：每一页的数据
+                # 值3：当最后一页数据少于n条，将数据并入上一页
+                try:
+                    # 获取第几页
+                    number = paginator.page(self.num)
+                except PageNotAnInteger:
+                    # 如果输入的页码数不是整数，那么显示第一页数据
+                    number = paginator.page(1)
+                except EmptyPage:
+                    number = paginator.page(paginator.num_pages)
+                info = '没有搜索到相关库存信息'
+                SearchItemStockInfoData = {'userinfo': {'name': self.name,
+                                 'page': number,
+                                 'paginator':paginator, 
+                                 'pageSep': self.pageSep}}
+                SearchItemStockInfoData['userinfo']['info'] = info
+        except:
+            pass
+        return SearchItemStockInfoData        
 
 
 

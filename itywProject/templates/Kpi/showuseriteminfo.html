@@ -126,12 +126,13 @@
                     <div class="tab-content">
                         <div class="col-sm-8" style="padding-left: 0;">
                             <div class="ibox float-e-margins">
+                                <h5>{{ userinfo.info }}</h5>
                                 <!-- <div class="ibox-content">
                                     <div class="text-left"> -->
                                         <table class="table">
                                             <div id="user_assets_table_wrapper" class="dataTables_wrapper form-inline dt-bootstrap no-footer">
                                                 <!-- <div id="uc" class="pull-left"></div> -->
-                                                <form action="/searchuser/" method="POST" enctype="multipart/form-data">
+                                                <form action="/searchuserinfo/" method="POST" enctype="multipart/form-data">
                                                     <div class="dataTables_length" >
                                                         &emsp;&emsp;
                                                         <input type="text" name="searchuser" class="form-control input-sm" placeholder="员工姓名/工号" required="">

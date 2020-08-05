@@ -7,7 +7,7 @@ from django.shortcuts import redirect
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.contrib.auth.hashers import make_password, check_password
 from django.core.paginator import Paginator , PageNotAnInteger, EmptyPage
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from .models import admininfo as a_i
 from .models import useritemsinfo as u_i_i
 from .models import iteminfo as i_i
@@ -277,7 +277,60 @@ def searchitem(request):
         except:
             pass
 
+def searchitemsn(request):
+    if request.session.get('is_login',None):
+        num = request.GET.get('index','1')
+        request.session['index'] = num
+        try:
+            pageSep = request.session['pageSep']
+        except:
+            pageSep = 10 
+        name = request.session['username']
+        if request.method == "POST":
+            SearchSn = request.POST.get('searchitemsn')
+            getSearchItemSnView = getSearchItemSn( num = num, pageSep = pageSep, name = name, SearchSn = SearchSn )
+            getSearchItemSnData = getSearchItemSnView.getSearchItemSnData()
+            try:
+                return render(request, 'Kpi/showmanageiteminfo.html', getSearchItemSnData)
+            except:
+                pass
 
+def searchuserinfo(request):
+    if request.session.get('is_login',None):
+        num = request.GET.get('index','1')
+        request.session['index'] = num
+        try:
+            pageSep = request.session['pageSep']
+        except:
+            pageSep = 10 
+        name = request.session['username']
+        if request.method == "POST":
+            searchuser = request.POST.get('searchuser')
+            getSearchUserItemsView = getSearchUserItems( num = num, pageSep = pageSep, name = name, searchuser = searchuser )
+            getSearchUserItemsData = getSearchUserItemsView.getSearchUserItemsData()
+            try:
+                return render(request, 'Kpi/showuseriteminfo.html', getSearchUserItemsData)
+            except:
+                pass
+
+
+def searchitemstock(request):
+    if request.session.get('is_login',None):
+        num = request.GET.get('index','1')
+        request.session['index'] = num
+        try:
+            pageSep = request.session['pageSep']
+        except:
+            pageSep = 10 
+        name = request.session['username']
+        if request.method == "POST":
+            searchitemstockinfo = request.POST.get('searchitemstockinfo')
+            getSearchItemStockInfoView = getSearchItemStockInfo( num = num, pageSep = pageSep, name = name, searchitemstockinfo = searchitemstockinfo )
+            getSearchItemStockInfoData = getSearchItemStockInfoView.getSearchItemStockInfoData()
+            try:
+                return render(request, 'Kpi/showitemstockinfo.html', getSearchItemStockInfoData)
+            except:
+                pass
 
 
 def manageiteminfo(request):
