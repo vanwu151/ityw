@@ -1360,12 +1360,15 @@ class getModedItemInfo(getItemDetail):
                                 item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info)
                 s.save()  # 更新资产变更表
                 editingItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
+                q_i_i = i_i.objects.get( item_sn = self.item_sn )
+                item_old_location = q_i_i.item_location
+                if OldItemDetailData['userinfo']['item_statu'] == '闲置':                    
+                    old_i_s =  i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = item_old_location )[0]                   
+                    item_stock_num_now = old_i_s.item_stock_num - 1
+                    old_i_s.item_stock_num = item_stock_num_now
+                    old_i_s.save()
                 try:
-                    q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = self.item_change_location )[0] # 更新该部门闲置物资库存
-                    if OldItemDetailData['userinfo']['item_statu'] == '闲置':                    
-                        item_stock_num_now = q_i_s.item_stock_num - 1
-                        q_i_s.item_stock_num = item_stock_num_now
-                        q_i_s.save()
+                    q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = self.item_change_location )[0] # 更新该部门闲置物资库存                    
                     item_destory_num_now = q_i_s.item_destory_num + 1
                     q_i_s.item_destory_num = item_destory_num_now
                     q_i_s.save()
