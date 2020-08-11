@@ -288,6 +288,7 @@ def searchitemsn(request):
         name = request.session['username']
         if request.method == "POST":
             SearchSn = request.POST.get('searchitemsn')
+            request.session['SearchSn'] = SearchSn
             getSearchItemSnView = getSearchItemSn( num = num, pageSep = pageSep, name = name, SearchSn = SearchSn )
             getSearchItemSnData = getSearchItemSnView.getSearchItemSnData()
             try:
@@ -305,9 +306,14 @@ def searchuserinfo(request):
             pageSep = 10 
         name = request.session['username']
         if request.method == "POST":
-            searchuser = request.POST.get('searchuser')
-            getSearchUserItemsView = getSearchUserItems( num = num, pageSep = pageSep, name = name, searchuser = searchuser )
-            getSearchUserItemsData = getSearchUserItemsView.getSearchUserItemsData()
+            action = request.POST.get('go')
+            if action == '搜索':
+                searchuser = request.POST.get('searchuser')
+                getSearchUserItemsView = getSearchUserItems( num = num, pageSep = pageSep, name = name, searchuser = searchuser )
+                getSearchUserItemsData = getSearchUserItemsView.getSearchUserItemsData()
+            if action == 'ALL':
+                getSearchUserItemsView = getItemInfo(name = name, num = num, pageSep = pageSep)
+                getSearchUserItemsData = getSearchUserItemsView.getItemInfoData()
             try:
                 return render(request, 'Kpi/showuseriteminfo.html', getSearchUserItemsData)
             except:
@@ -343,8 +349,13 @@ def manageiteminfo(request):
             pageSep = 10 
         if request.method == "GET":
             name = request.session['username']
-            getItemInfoView = getItemInfo(name = name, num = num, pageSep = pageSep)
-            getItemInfoData = getItemInfoView.getItemInfoData()
+            try:
+                SearchSn = request.session['SearchSn']
+                getItemInfoView = getSearchItemSn( num = num, pageSep = pageSep, name = name, SearchSn = SearchSn )
+                getItemInfoData = getItemInfoView.getSearchItemSnData()
+            except:
+                getItemInfoView = getItemInfo(name = name, num = num, pageSep = pageSep)
+                getItemInfoData = getItemInfoView.getItemInfoData()
             try:
                 return render(request, 'Kpi/showmanageiteminfo.html', getItemInfoData)
             except:
@@ -396,8 +407,13 @@ def PageItemInfo(request):
             pageSep = int(request.POST.get('PageLength'))
             request.session['pageSep'] = pageSep    # 将一页展示多少行数存入session
             name = request.session['username']
-            getItemInfoView = getItemInfo(name = name, num = num, pageSep = pageSep)
-            getItemInfoData = getItemInfoView.getItemInfoData()
+            try:
+                SearchSn = request.session['SearchSn']
+                getItemInfoView = getSearchItemSn( num = num, pageSep = pageSep, name = name, SearchSn = SearchSn )
+                getItemInfoData = getItemInfoView.getSearchItemSnData()
+            except:
+                getItemInfoView = getItemInfo(name = name, num = num, pageSep = pageSep)
+                getItemInfoData = getItemInfoView.getItemInfoData()
             try:
                 return render(request, 'Kpi/showmanageiteminfo.html', getItemInfoData)
             except:

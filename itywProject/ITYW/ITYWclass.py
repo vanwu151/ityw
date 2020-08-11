@@ -81,9 +81,13 @@ class getSearchItemSn(getItemInfo):
 
     def getSearchItemSnData(self):
         try:
-            testSnExists = i_i.objects.filter(Q(item_name__icontains=self.SearchSn)|Q(item_sn__icontains=self.SearchSn)).exists()
+            testSnExists = i_i.objects.filter(Q(item_name__icontains=self.SearchSn)|Q(item_sn__icontains=self.SearchSn)|
+                                              Q(item_now_user__icontains=self.SearchSn)|Q(item_now_user_workid__icontains=self.SearchSn)|
+                                              Q(item_statu__icontains=self.SearchSn)).exists()
             if testSnExists:
-                snII = i_i.objects.filter(Q(item_name__icontains=self.SearchSn)|Q(item_sn__icontains=self.SearchSn)).order_by( '-item_inbound_date' )
+                snII = i_i.objects.filter(Q(item_name__icontains=self.SearchSn)|Q(item_sn__icontains=self.SearchSn)|
+                                          Q(item_now_user__icontains=self.SearchSn)|Q(item_now_user_workid__icontains=self.SearchSn)|
+                                          Q(item_statu__icontains=self.SearchSn)).order_by( '-item_inbound_date' )
                 paginator = Paginator(snII, self.pageSep, 3)
                 # 值1：所有的数据
                 # 值2：每一页的数据
@@ -137,7 +141,8 @@ class DeleteItemInfo(getItemInfo):
 
     def DeleteItemInfoData(self):
         try:
-            passUserItemRec = u_i_i.objects.get( user_workid = self.item_now_user_workid )    # 删除用户表里的设备信息
+            oldItemLocation = i_i.objects.get( item_sn = self.item_sn ).item_location   # 资产原所在位置
+            passUserItemRec = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = oldItemLocation )[0]    # 删除用户表里的设备信息
             editingPassUserItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
             if editingPassUserItemKind == '手机':
                 old_user_phone_sn_list = passUserItemRec.user_phone_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
@@ -207,10 +212,6 @@ class DeleteItemInfo(getItemInfo):
                     item_stock_num_now = q_i_s.item_stock_num - 1
                     q_i_s.item_stock_num = item_stock_num_now
                     q_i_s.save()
-                if item_statu == '报废':    
-                    item_destory_num_now = q_i_s.item_destory_num - 1
-                    q_i_s.item_destory_num = item_destory_num_now
-                    q_i_s.save()
             except:
                 pass
             q_i_i = i_i.objects.get( item_sn = self.item_sn )
@@ -221,8 +222,25 @@ class DeleteItemInfo(getItemInfo):
             getDeleteItemInfoData['userinfo']['info'] = info
             print(getDeleteItemInfoData)
             return getDeleteItemInfoData
-        except:
-            pass
+        except:  # 删除原状态为报废的资产
+            try:
+                editingItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
+                item_location = i_i.objects.get( item_sn = self.item_sn ).item_location
+                item_statu = i_i.objects.get( item_sn = self.item_sn ).item_statu
+                q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = item_location )[0] # 更新该部门闲置物资库存   
+                item_destory_num_now = q_i_s.item_destory_num - 1
+                q_i_s.item_destory_num = item_destory_num_now
+                q_i_s.save()
+                q_i_i = i_i.objects.get( item_sn = self.item_sn )
+                q_i_i.delete()
+            except:
+                pass
+            info = '{}已删除！'.format(self.item_sn)                              
+            getDeleteItemInfoView = getItemInfo(pageSep = self.pageSep, name = self.name, num = self.num)
+            getDeleteItemInfoData = getDeleteItemInfoView.getItemInfoData()
+            getDeleteItemInfoData['userinfo']['info'] = info
+            print(getDeleteItemInfoData)
+            return getDeleteItemInfoData
 
 
 
@@ -546,14 +564,12 @@ class AddedItemInfo(getItemInfo):
                 uii.save()
                 
             except:
-                print('2222222233333333333331')
                 SaveItemInfo = i_i(item_inbound_date = self.item_inbound_date, item_name = self.item_name, item_kind = self.item_kind, item_sn = self.item_sn, 
                             item_now_user = self.item_now_user, item_now_user_workid = self.item_now_user_workid, item_statu = self.item_statu,
                             item_location = self.item_location, item_info = self.item_info)
                 SaveItemInfo.save()
                 try:
-                    i_s.objects.filter( item_kind = self.item_kind )[0]  # 判断库存表里有无该类型资产
-                    print('222222223333333333333')               
+                    i_s.objects.filter( item_kind = self.item_kind )[0]  # 判断库存表里有无该类型资产              
                     test = i_s.objects.filter( item_kind = self.item_kind ).filter( item_stock_location = self.item_location ).exists()
                     item_stock_num = i_s.objects.filter( item_kind = self.item_kind ).filter( item_stock_location = self.item_location )[0].item_stock_num
                     item_destory_num = i_s.objects.filter( item_kind = self.item_kind ).filter( item_stock_location = self.item_location )[0].item_destory_num
