@@ -1258,8 +1258,10 @@ class getModedItemInfo(getItemDetail):
                             passUserItemRec.user_pc_sn = ''
                         nowItemInfoRc = i_i.objects.get( item_sn = self.item_sn )
                         nowItemInfoRc.item_statu = '闲置'
+                        nowItemInfoRc.item_location = self.item_change_location
                         nowItemInfoRc.item_now_user = self.item_now_user
                         nowItemInfoRc.item_now_user_workid = self.item_now_user_workid
+                        nowItemInfoRc.item_info = self.item_change_info
                         nowItemInfoRc.save()
                         now_user_pc_list = nowUserItemRec.user_pc_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                         now_user_pc_list_new = now_user_pc_list.split(',')
@@ -1269,10 +1271,10 @@ class getModedItemInfo(getItemDetail):
                         except:
                             pass
                         nowUserItemRec.user_pc_sn = now_user_pc_list_new
-                        nowItemInfoRc.item_statu = '闲置'
-                        nowItemInfoRc.item_now_user = self.item_now_user
-                        nowItemInfoRc.item_now_user_workid = self.item_now_user_workid
-                        nowItemInfoRc.save()
+                        # nowItemInfoRc.item_statu = '闲置'
+                        # nowItemInfoRc.item_now_user = self.item_now_user
+                        # nowItemInfoRc.item_now_user_workid = self.item_now_user_workid
+                        # nowItemInfoRc.save()
                     if self.item_now_user_workid != '':  # 闲置资产转移至非空用户，判断原用户是否有电脑若有则将原电脑设置为闲置状态且无关联用户及用户工号
                         testPc = u_i_i.objects.get( user_workid = self.item_now_user_workid ).user_pc_sn
                         if testPc != '':                            
@@ -1281,11 +1283,13 @@ class getModedItemInfo(getItemDetail):
                             oldItemInfoRc.item_now_user = ''
                             oldItemInfoRc.item_now_user_workid = ''
                             oldItemInfoRc.save()
-                            nowItemInfoRc = i_i.objects.get( item_sn = self.item_sn )
-                            nowItemInfoRc.item_statu = '闲置'
-                            nowItemInfoRc.item_now_user = self.item_now_user
-                            nowItemInfoRc.item_now_user_workid = self.item_now_user_workid
-                            nowItemInfoRc.save()
+                        nowItemInfoRc = i_i.objects.get( item_sn = self.item_sn )
+                        nowItemInfoRc.item_location = self.item_change_location
+                        nowItemInfoRc.item_info = self.item_change_info
+                        nowItemInfoRc.item_statu = '闲置'
+                        nowItemInfoRc.item_now_user = self.item_now_user
+                        nowItemInfoRc.item_now_user_workid = self.item_now_user_workid
+                        nowItemInfoRc.save()
                         q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = self.item_change_location )[0] # 更新该部门闲置物资库存
                         item_stock_num_now = q_i_s.item_stock_num + 1
                         q_i_s.item_stock_num = item_stock_num_now
@@ -1334,6 +1338,8 @@ class getModedItemInfo(getItemDetail):
                             pass
                         nowUserItemRec.user_notebook_sn = now_user_notebook_list_new
                         nowItemInfoRc = i_i.objects.get( item_sn = self.item_sn )
+                        nowItemInfoRc.item_location = self.item_change_location
+                        nowItemInfoRc.item_info = self.item_change_info
                         nowItemInfoRc.item_statu = '闲置'
                         nowItemInfoRc.item_now_user = self.item_now_user
                         nowItemInfoRc.item_now_user_workid = self.item_now_user_workid
@@ -1348,6 +1354,8 @@ class getModedItemInfo(getItemDetail):
                             oldItemInfoRc.save()
                         nowItemInfoRc = i_i.objects.get( item_sn = self.item_sn )
                         nowItemInfoRc.item_statu = '闲置'
+                        nowItemInfoRc.item_location = self.item_change_location
+                        nowItemInfoRc.item_info = self.item_change_info
                         nowItemInfoRc.item_now_user = self.item_now_user
                         nowItemInfoRc.item_now_user_workid = self.item_now_user_workid
                         nowItemInfoRc.save()
