@@ -921,7 +921,7 @@ class getModedItemInfo(getItemDetail):
                             item_stock_num_now = q_i_s.item_stock_num - 1
                             q_i_s.item_stock_num = item_stock_num_now
                             q_i_s.save()
-                        if q_i_i.item_statu == '闲置':
+                        elif q_i_i.item_statu == '闲置':
                             oldItemLocation = q_i_i.item_location
                             q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = oldItemLocation )[0] # 更新该部门闲置物资库存
                             item_stock_num_now = q_i_s.item_stock_num - 1
@@ -1035,7 +1035,7 @@ class getModedItemInfo(getItemDetail):
                             item_stock_num_now = q_i_s.item_stock_num - 1
                             q_i_s.item_stock_num = item_stock_num_now
                             q_i_s.save()
-                        if q_i_i.item_statu == '闲置':
+                        elif q_i_i.item_statu == '闲置':
                             oldItemLocation = q_i_i.item_location
                             q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = oldItemLocation )[0] # 更新该部门闲置物资库存
                             item_stock_num_now = q_i_s.item_stock_num - 1
@@ -1327,7 +1327,6 @@ class getModedItemInfo(getItemDetail):
                                 pass
                             passUserItemRec.user_notebook_sn = old_user_notebook_list_new
                         else:
-                            print('ioioioioioio', passUserItemRec.user_notebook_sn)
                             passUserItemRec.user_notebook_sn = ''
                         now_user_notebook_list = nowUserItemRec.user_notebook_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                         now_user_notebook_list_new = now_user_notebook_list.split(',')
