@@ -83,11 +83,13 @@ class getSearchItemSn(getItemInfo):
         try:
             testSnExists = i_i.objects.filter(Q(item_name__icontains=self.SearchSn)|Q(item_sn__icontains=self.SearchSn)|
                                               Q(item_now_user__icontains=self.SearchSn)|Q(item_now_user_workid__icontains=self.SearchSn)|
-                                              Q(item_statu__icontains=self.SearchSn)|Q(item_location__icontains=self.SearchSn)).exists()
+                                              Q(item_statu__icontains=self.SearchSn)|Q(item_location__icontains=self.SearchSn)|
+                                              Q(item_kind__icontains=self.SearchSn)).exists()
             if testSnExists:
                 snII = i_i.objects.filter(Q(item_name__icontains=self.SearchSn)|Q(item_sn__icontains=self.SearchSn)|
                                           Q(item_now_user__icontains=self.SearchSn)|Q(item_now_user_workid__icontains=self.SearchSn)|
-                                          Q(item_statu__icontains=self.SearchSn)|Q(item_location__icontains=self.SearchSn)).order_by( '-item_inbound_date' )
+                                          Q(item_statu__icontains=self.SearchSn)|Q(item_location__icontains=self.SearchSn)|
+                                          Q(item_kind__icontains=self.SearchSn)).order_by( '-item_inbound_date' )
                 paginator = Paginator(snII, self.pageSep, 3)
                 # 值1：所有的数据
                 # 值2：每一页的数据
