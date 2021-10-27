@@ -361,6 +361,28 @@ def manageiteminfo(request):
             except:
                 pass
 
+def PageItemInfo(request):
+    if request.session.get('is_login',None):
+        try:
+            num = request.session['index']
+        except:
+            num = '1'
+        if request.method == "POST":
+            pageSep = int(request.POST.get('PageLength'))
+            request.session['pageSep'] = pageSep    # 将一页展示多少行数存入session
+            name = request.session['username']
+            try:
+                SearchSn = request.session['SearchSn']
+                getItemInfoView = getSearchItemSn( num = num, pageSep = pageSep, name = name, SearchSn = SearchSn )
+                getItemInfoData = getItemInfoView.getSearchItemSnData()
+            except:
+                getItemInfoView = getItemInfo(name = name, num = num, pageSep = pageSep)
+                getItemInfoData = getItemInfoView.getItemInfoData()
+            try:
+                return render(request, 'Kpi/showmanageiteminfo.html', getItemInfoData)
+            except:
+                pass
+
 def useriteminfo(request):
     if request.session.get('is_login',None):
         num = request.GET.get('index','1')
@@ -395,29 +417,7 @@ def itemstockinfo(request):
             except:
                 pass
 
-
-
-def PageItemInfo(request):
-    if request.session.get('is_login',None):
-        try:
-            num = request.session['index']
-        except:
-            num = '1'
-        if request.method == "POST":
-            pageSep = int(request.POST.get('PageLength'))
-            request.session['pageSep'] = pageSep    # 将一页展示多少行数存入session
-            name = request.session['username']
-            try:
-                SearchSn = request.session['SearchSn']
-                getItemInfoView = getSearchItemSn( num = num, pageSep = pageSep, name = name, SearchSn = SearchSn )
-                getItemInfoData = getItemInfoView.getSearchItemSnData()
-            except:
-                getItemInfoView = getItemInfo(name = name, num = num, pageSep = pageSep)
-                getItemInfoData = getItemInfoView.getItemInfoData()
-            try:
-                return render(request, 'Kpi/showmanageiteminfo.html', getItemInfoData)
-            except:
-                pass 
+ 
 
 def PageUserItem(request):
     if request.session.get('is_login',None):
