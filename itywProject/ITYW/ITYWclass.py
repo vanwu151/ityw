@@ -191,7 +191,7 @@ class DeleteItemInfo(getItemInfo):
                 except:
                     pass
                 passUserItemRec.user_qianniu_name = old_user_qianniu_name_list_new
-            if editingPassUserItemKind == '其他':
+            if editingPassUserItemKind == '办公设备':
                 old_user_otheritems_list = passUserItemRec.user_otheritems.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                 old_user_otheritems_list_new = old_user_otheritems_list.split(',')
                 old_user_otheritems_list_new.remove(self.item_sn)
@@ -218,6 +218,8 @@ class DeleteItemInfo(getItemInfo):
                 pass
             q_i_i = i_i.objects.get( item_sn = self.item_sn )
             q_i_i.delete()
+            q_i_s = i_s.objects.get( item_sn = self.item_sn )
+            q_i_s.delete()
             info = '{}已删除！'.format(self.item_sn)                              
             getDeleteItemInfoView = getItemInfo(pageSep = self.pageSep, name = self.name, num = self.num)
             getDeleteItemInfoData = getDeleteItemInfoView.getItemInfoData()
@@ -229,6 +231,8 @@ class DeleteItemInfo(getItemInfo):
                 editingItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
                 item_location = i_i.objects.get( item_sn = self.item_sn ).item_location
                 item_statu = i_i.objects.get( item_sn = self.item_sn ).item_statu
+                q_i_s = i_s.objects.get( item_sn = self.item_sn )
+                q_i_s.delete()
                 q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = item_location )[0] # 更新该部门闲置物资库存   
                 item_destory_num_now = q_i_s.item_destory_num - 1
                 q_i_s.item_destory_num = item_destory_num_now
@@ -367,7 +371,7 @@ class AddedItemInfo(getItemInfo):
                             pass
                         uii.user_qianniu_name = user_qianniu_name_list_new
                         info = '{} 资产，编号/号码 {} 已添加'.format(self.item_name, self.item_sn)
-                    if self.item_kind == '其他':
+                    if self.item_kind == '办公设备':
                         user_otheritems_list = uii.user_otheritems.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                         user_otheritems_list_new = user_otheritems_list.split(',')
                         user_otheritems_list_new.append(self.item_sn)
@@ -632,7 +636,7 @@ class AddedItemInfo(getItemInfo):
                     Saveuseritemsinfo = u_i_i(user_name = self.item_now_user, user_workid = self.item_now_user_workid, user_location = self.item_location,
                                                 user_qianniu_name = user_qianniu_name )
                     info = '{} 资产，编号/号码 {} 已添加'.format(self.item_name, self.item_sn)                          
-                if self.item_kind == '其他':
+                if self.item_kind == '办公设备':
                     otheritems = self.item_sn
                     user_otheritems = [otheritems]
                     Saveuseritemsinfo = u_i_i(user_name = self.item_now_user, user_workid = self.item_now_user_workid, user_location = self.item_location,
@@ -850,7 +854,7 @@ class getModedItemInfo(getItemDetail):
                             except:
                                 pass
                             nowUserItemRec.user_qianniu_name = now_user_qianniu_name_list_new
-                        if editingPassUserItemKind == '其他':
+                        if editingPassUserItemKind == '办公设备':
                             old_user_otheritems_list = passUserItemRec.user_otheritems.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                             old_user_otheritems_list_new = old_user_otheritems_list.split(',')
                             old_user_otheritems_list_new.remove(self.item_sn)
@@ -1220,7 +1224,7 @@ class getModedItemInfo(getItemDetail):
                             except:
                                 pass
                             nowUserItemRec.user_qianniu_name = now_user_qianniu_name_list_new
-                        if editingPassUserItemKind == '其他':
+                        if editingPassUserItemKind == '办公设备':
                             old_user_otheritems_list = passUserItemRec.user_otheritems.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                             old_user_otheritems_list_new = old_user_otheritems_list.split(',')
                             old_user_otheritems_list_new.remove(self.item_sn)
@@ -1455,7 +1459,7 @@ class getModedItemInfo(getItemDetail):
                     except:
                         pass
                     passUserItemRec.user_qianniu_name = old_user_qianniu_name_list_new
-                if editingPassUserItemKind == '其他':
+                if editingPassUserItemKind == '办公设备':
                     old_user_otheritems_list = passUserItemRec.user_otheritems.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                     old_user_otheritems_list_new = old_user_otheritems_list.split(',')
                     old_user_otheritems_list_new.remove(self.item_sn)
