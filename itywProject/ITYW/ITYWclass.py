@@ -218,8 +218,6 @@ class DeleteItemInfo(getItemInfo):
                 pass
             q_i_i = i_i.objects.get( item_sn = self.item_sn )
             q_i_i.delete()
-            q_i_s = i_s.objects.get( item_sn = self.item_sn )
-            q_i_s.delete()
             info = '{}已删除！'.format(self.item_sn)                              
             getDeleteItemInfoView = getItemInfo(pageSep = self.pageSep, name = self.name, num = self.num)
             getDeleteItemInfoData = getDeleteItemInfoView.getItemInfoData()
@@ -892,7 +890,7 @@ class getModedItemInfo(getItemDetail):
                             oldItemStandByRcListNew = oldItemStandByRcList.split(',')
                             oldItemStandByRcListNew.append(testPc)
                             try:
-                                oldItemStandByRcListNews.remove('')
+                                oldItemStandByRcListNew.remove('')
                             except:
                                 pass
                             oldItemStandByRc.user_pc_sn = oldItemStandByRcListNew
@@ -1006,7 +1004,7 @@ class getModedItemInfo(getItemDetail):
                             oldItemStandByRcListNew = oldItemStandByRcList.split(',')
                             oldItemStandByRcListNew.append(testNotebook)
                             try:
-                                oldItemStandByRcListNews.remove('')
+                                oldItemStandByRcListNew.remove('')
                             except:
                                 pass
                             oldItemStandByRc.user_notebook_sn = oldItemStandByRcListNew
