@@ -155,6 +155,15 @@ class DeleteItemInfo(getItemInfo):
                 except:
                     pass
                 passUserItemRec.user_phone_sn = old_user_phone_sn_list_new
+            if editingPassUserItemKind == '显示器':
+                old_user_monitor_sn_list = passUserItemRec.user_monitor_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                old_user_monitor_sn_list_new = old_user_monitor_sn_list.split(',')
+                old_user_monitor_sn_list_new.remove(self.item_sn)
+                try:
+                    old_user_monitor_sn_list_new.remove('')
+                except:
+                    pass
+                passUserItemRec.user_monitor_sn = old_user_monitor_sn_list_new
             if editingPassUserItemKind == '手机号码':
                 old_user_phone_num_list = passUserItemRec.user_phone_num.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                 old_user_phone_num_list_new = old_user_phone_num_list.split(',')
@@ -328,6 +337,16 @@ class AddedItemInfo(getItemInfo):
                         except:
                             pass
                         uii.user_phone_sn = user_phone_sn_list_new
+                        info = '{} 资产，编号/号码 {} 已添加'.format(self.item_name, self.item_sn)
+                    if self.item_kind == '显示器':
+                        user_monitor_sn_list = uii.user_monitor_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                        user_monitor_sn_list_new = user_monitor_sn_list.split(',')
+                        user_monitor_sn_list_new.append(self.item_sn)
+                        try:
+                            user_monitor_sn_list_new.remove('')
+                        except:
+                            pass
+                        uii.user_monitor_sn = user_monitor_sn_list_new
                         info = '{} 资产，编号/号码 {} 已添加'.format(self.item_name, self.item_sn)
                     if self.item_kind == '手机号码':
                         user_phone_num_list = uii.user_phone_num.replace('[', '').replace(']', '').replace("'","").replace(' ','')
@@ -615,7 +634,13 @@ class AddedItemInfo(getItemInfo):
                     user_phone_num = [phone_num]
                     Saveuseritemsinfo = u_i_i(user_name = self.item_now_user, user_workid = self.item_now_user_workid, user_location = self.item_location,
                                                 user_phone_num = user_phone_num )
-                    info = '{} 资产，编号/号码 {} 已添加'.format(self.item_name, self.item_sn)                          
+                    info = '{} 资产，编号/号码 {} 已添加'.format(self.item_name, self.item_sn) 
+                if self.item_kind == '显示器':
+                    monitor_sn = self.item_sn
+                    user_monitor_sn = [monitor_sn]
+                    Saveuseritemsinfo = u_i_i(user_name = self.item_now_user, user_workid = self.item_now_user_workid, user_location = self.item_location,
+                                                user_monitor_sn = user_monitor_sn )
+                    info = '{} 资产，编号/号码 {} 已添加'.format(self.item_name, self.item_sn)                         
                 if self.item_kind == 'pad':
                     pad_sn = self.item_sn
                     user_pad_sn = [pad_sn]
@@ -784,6 +809,23 @@ class getModedItemInfo(getItemDetail):
                             except:
                                 pass
                             nowUserItemRec.user_phone_sn = now_user_phone_sn_list_new
+                        if editingPassUserItemKind == '显示器':
+                            old_user_monitor_sn_list = passUserItemRec.user_monitor_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                            old_user_monitor_sn_list_new = old_user_monitor_sn_list.split(',')
+                            old_user_monitor_sn_list_new.remove(self.item_sn)
+                            try:
+                                old_user_monitor_sn_list_new.remove('')
+                            except:
+                                pass
+                            passUserItemRec.user_monitor_sn = old_user_monitor_sn_list_new
+                            now_user_monitor_sn_list = nowUserItemRec.user_monitor_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                            now_user_monitor_sn_list_new = now_user_monitor_sn_list.split(',')
+                            now_user_monitor_sn_list_new.append(self.item_sn)
+                            try:
+                                now_user_monitor_sn_list_new.remove('')
+                            except:
+                                pass
+                            nowUserItemRec.user_monitor_sn = now_user_monitor_sn_list_new
                         if editingPassUserItemKind == '手机号码':
                             old_user_phone_num_list = passUserItemRec.user_phone_num.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                             old_user_phone_num_list_new = old_user_phone_num_list.split(',')
@@ -1154,6 +1196,23 @@ class getModedItemInfo(getItemDetail):
                             except:
                                 pass
                             nowUserItemRec.user_phone_sn = now_user_phone_sn_list_new
+                        if editingPassUserItemKind == '显示器':
+                            old_user_monitor_sn_list = passUserItemRec.user_monitor_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                            old_user_monitor_sn_list_new = old_user_monitor_sn_list.split(',')
+                            old_user_monitor_sn_list_new.remove(self.item_sn)
+                            try:
+                                old_user_monitor_sn_list_new.remove('')
+                            except:
+                                pass
+                            passUserItemRec.user_monitor_sn = old_user_monitor_sn_list_new
+                            now_user_monitor_sn_list = nowUserItemRec.user_monitor_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                            now_user_monitor_sn_list_new = now_user_monitor_sn_list.split(',')
+                            now_user_monitor_sn_list_new.append(self.item_sn)
+                            try:
+                                now_user_monitor_sn_list_new.remove('')
+                            except:
+                                pass
+                            nowUserItemRec.user_monitor_sn = now_user_monitor_sn_list_new
                         if editingPassUserItemKind == '手机号码':
                             old_user_phone_num_list = passUserItemRec.user_phone_num.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                             old_user_phone_num_list_new = old_user_phone_num_list.split(',')
@@ -1421,6 +1480,15 @@ class getModedItemInfo(getItemDetail):
                     except:
                         pass
                     passUserItemRec.user_phone_sn = old_user_phone_sn_list_new
+                if editingPassUserItemKind == '显示器':
+                    old_user_monitor_sn_list = passUserItemRec.user_monitor_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                    old_user_monitor_sn_list_new = old_user_monitor_sn_list.split(',')
+                    old_user_monitor_sn_list_new.remove(self.item_sn)
+                    try:
+                        old_user_monitor_sn_list_new.remove('')
+                    except:
+                        pass
+                    passUserItemRec.user_monitor_sn = old_user_monitor_sn_list_new
                 if editingPassUserItemKind == '手机号码':
                     old_user_phone_num_list = passUserItemRec.user_phone_num.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                     old_user_phone_num_list_new = old_user_phone_num_list.split(',')

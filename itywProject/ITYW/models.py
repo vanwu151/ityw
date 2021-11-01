@@ -18,6 +18,7 @@ class useritemsinfo(models.Model):
 	user_notebook_sn = models.CharField(max_length=1000)
 	user_phone_sn = models.CharField(max_length=1000)
 	user_pad_sn = models.CharField(max_length=1000)
+	user_monitor_sn = models.CharField(max_length=1000)
 	user_phone_num = models.CharField(max_length=1000)
 	user_wechat_name = models.CharField(max_length=1000)
 	user_qianniu_name = models.CharField(max_length=1000)
