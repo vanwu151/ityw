@@ -294,7 +294,7 @@ class AddedItemInfo(getItemInfo):
                 old_user_location_is = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0]  
                 old_user_location = old_user_location_is.user_location 
                 if self.item_location != old_user_location:          # 判断用户的位置在新增的时候有无改变，若改变则修改其用户资产表的里的部门位置信息
-                    old_user_location = self.item_location
+                    old_user_location_is.user_location = self.item_location
                     old_user_location_is.save()
                 if self.item_kind != '台式电脑' and self.item_kind != '笔记本电脑':   # 每名员工名下只能有一台台式电脑或笔记本，所以单独拎出来
                     try:
