@@ -291,6 +291,11 @@ class AddedItemInfo(getItemInfo):
             try:
                 uii = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0]  # 利用工号判断用户资产表里有无该员工记录
                 print('nowworkid', self.item_now_user_workid)
+                old_user_location_is = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0]  
+                old_user_location = old_user_location_is.user_location 
+                if self.item_location != old_user_location:          # 判断用户的位置在新增的时候有无改变，若改变则修改其用户资产表的里的部门位置信息
+                    old_user_location = self.item_location
+                    old_user_location_is.save()
                 if self.item_kind != '台式电脑' and self.item_kind != '笔记本电脑':   # 每名员工名下只能有一台台式电脑或笔记本，所以单独拎出来
                     try:
                         i_s.objects.filter( item_kind = self.item_kind )[0]  # 判断库存表里有无该类型资产               
@@ -400,8 +405,8 @@ class AddedItemInfo(getItemInfo):
                         info = '{} 资产，编号/号码 {} 已添加'.format(self.item_name, self.item_sn)
                 if self.item_kind == '台式电脑':
                     try:   # 判断该员工是否已经有台式电脑
-                        # pcTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_location )[0].user_pc_sn
-                        pcTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0].user_pc_sn
+                        pcTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_location )[0].user_pc_sn
+                        # pcTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0].user_pc_sn
                         if pcTest != '' and ( self.item_now_user != '' and self.item_now_user_workid != ''): # 空名可以挂多台电脑
                             info = '{}员工已经有台式电脑'.format(self.item_now_user_workid)                            
                         if (pcTest == '' or pcTest != '') and (self.item_now_user == '' or self.item_now_user_workid == ''):
@@ -495,8 +500,8 @@ class AddedItemInfo(getItemInfo):
                         pass
                 if self.item_kind == '笔记本电脑':
                     try:   # 判断该员工是否已经有台式电脑
-                        # notebookTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_location )[0].user_notebook_sn
-                        notebookTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0].user_notebook_sn
+                        notebookTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_location )[0].user_notebook_sn
+                        # notebookTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0].user_notebook_sn
                         if notebookTest != '' and ( self.item_now_user != '' and self.item_now_user_workid != ''): # 空名可以挂多台电脑
                             info = '{}员工已经有笔记本电脑'.format(self.item_now_user_workid)
                         if (notebookTest == '' or notebookTest != '') and (self.item_now_user == '' or self.item_now_user_workid == ''):
