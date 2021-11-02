@@ -289,13 +289,11 @@ class AddedItemInfo(getItemInfo):
             return getItemInfoData
         except:                        
             try:
-                uii = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0]  # 利用工号判断用户资产表里有无该员工记录
-                print('nowworkid', self.item_now_user_workid)
-                old_user_location_is = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0]  
-                old_user_location = old_user_location_is.user_location 
+                uii = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0]  # 利用工号判断用户资产表里有无该员工记录  
+                old_user_location = uii.user_location 
                 if self.item_location != old_user_location:          # 判断用户的位置在新增的时候有无改变，若改变则修改其用户资产表的里的部门位置信息
-                    old_user_location_is.user_location = self.item_location
-                    old_user_location_is.save()
+                    uii.user_location = self.item_location 
+                    uii.save()
                 if self.item_kind != '台式电脑' and self.item_kind != '笔记本电脑':   # 每名员工名下只能有一台台式电脑或笔记本，所以单独拎出来
                     try:
                         i_s.objects.filter( item_kind = self.item_kind )[0]  # 判断库存表里有无该类型资产               
