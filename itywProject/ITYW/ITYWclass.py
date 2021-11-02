@@ -400,11 +400,13 @@ class AddedItemInfo(getItemInfo):
                         info = '{} 资产，编号/号码 {} 已添加'.format(self.item_name, self.item_sn)
                 if self.item_kind == '台式电脑':
                     try:   # 判断该员工是否已经有台式电脑
-                        pcTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_location )[0].user_pc_sn
+                        # pcTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_location )[0].user_pc_sn
+                        pcTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0].user_pc_sn
                         if pcTest != '' and ( self.item_now_user != '' and self.item_now_user_workid != ''): # 空名可以挂多台电脑
                             info = '{}员工已经有台式电脑'.format(self.item_now_user_workid)                            
                         if (pcTest == '' or pcTest != '') and (self.item_now_user == '' or self.item_now_user_workid == ''):
-                            uii = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_location )[0]
+                            # uii = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_location )[0]
+                            uii = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0]
                             user_pc_list = uii.user_pc_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                             user_pc_list_new = user_pc_list.split(',')
                             user_pc_list_new.append(self.item_sn)
@@ -493,11 +495,13 @@ class AddedItemInfo(getItemInfo):
                         pass
                 if self.item_kind == '笔记本电脑':
                     try:   # 判断该员工是否已经有台式电脑
-                        notebookTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_location )[0].user_notebook_sn
+                        # notebookTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_location )[0].user_notebook_sn
+                        notebookTest = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0].user_notebook_sn
                         if notebookTest != '' and ( self.item_now_user != '' and self.item_now_user_workid != ''): # 空名可以挂多台电脑
                             info = '{}员工已经有笔记本电脑'.format(self.item_now_user_workid)
                         if (notebookTest == '' or notebookTest != '') and (self.item_now_user == '' or self.item_now_user_workid == ''):
-                            uii = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_location )[0]
+                            # uii = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = self.item_location )[0]
+                            uii = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0]
                             user_notebook_list = uii.user_notebook_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                             user_notebook_list_new = user_notebook_list.split(',')
                             user_notebook_list_new.append(self.item_sn)
