@@ -294,6 +294,10 @@ class AddedItemInfo(getItemInfo):
                 if self.item_location != old_user_location:          # 判断用户的位置在新增的时候有无改变，若改变则修改其用户资产表的里的部门位置信息
                     uii.user_location = self.item_location 
                     uii.save()
+                    ii = i_i.objects.filter( item_now_user_workid = self.item_now_user_workid ) # 查找该用户底下其他资产
+                    for item in ii:
+                        item.item_location = self.item_location  # 更新该用户底下其他资产的位置信息
+                        item.save()
                 if self.item_kind != '台式电脑' and self.item_kind != '笔记本电脑':   # 每名员工名下只能有一台台式电脑或笔记本，所以单独拎出来
                     try:
                         i_s.objects.filter( item_kind = self.item_kind )[0]  # 判断库存表里有无该类型资产               
