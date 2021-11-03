@@ -143,137 +143,138 @@ class DeleteItemInfo(getItemInfo):
 
     def DeleteItemInfoData(self):
         try:
-            oldItemLocation = i_i.objects.get( item_sn = self.item_sn ).item_location   # 资产原所在位置
-            passUserItemRec = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = oldItemLocation )[0]    # 删除用户表里的设备信息
-            editingPassUserItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
-            print('self.item_now_user_workid!!!!!!!!!!', self.item_now_user_workid)
-            print('editingPassUserItemKind!!!!!!!!!!', editingPassUserItemKind)
-            if editingPassUserItemKind == '手机':
-                old_user_phone_sn_list = passUserItemRec.user_phone_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
-                old_user_phone_sn_list_new = old_user_phone_sn_list.split(',')
+            item_statu = i_i.objects.get( item_sn = self.item_sn ).item_statu
+            if item_statu != '报废':
+                oldItemLocation = i_i.objects.get( item_sn = self.item_sn ).item_location   # 资产原所在位置
+                passUserItemRec = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = oldItemLocation )[0]    # 删除用户表里的设备信息
+                editingPassUserItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
+                print('self.item_now_user_workid!!!!!!!!!!', self.item_now_user_workid)
+                print('editingPassUserItemKind!!!!!!!!!!', editingPassUserItemKind)
+                if editingPassUserItemKind == '手机':
+                    old_user_phone_sn_list = passUserItemRec.user_phone_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                    old_user_phone_sn_list_new = old_user_phone_sn_list.split(',')
+                    try:
+                        old_user_phone_sn_list_new.remove(self.item_sn)
+                    except Exception as e:
+                        print(e)
+                    try:
+                        old_user_phone_sn_list_new.remove('')
+                    except:
+                        pass
+                    passUserItemRec.user_phone_sn = old_user_phone_sn_list_new
+                if editingPassUserItemKind == '显示器':
+                    old_user_monitor_sn_list = passUserItemRec.user_monitor_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                    old_user_monitor_sn_list_new = old_user_monitor_sn_list.split(',')
+                    try:
+                        old_user_monitor_sn_list_new.remove(self.item_sn)
+                    except Exception as e:
+                        print(e)
+                    try:
+                        old_user_monitor_sn_list_new.remove('')
+                    except:
+                        pass
+                    passUserItemRec.user_monitor_sn = old_user_monitor_sn_list_new
+                if editingPassUserItemKind == '手机号码':
+                    old_user_phone_num_list = passUserItemRec.user_phone_num.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                    old_user_phone_num_list_new = old_user_phone_num_list.split(',')
+                    try:
+                        old_user_phone_num_list_new.remove(self.item_sn)
+                    except Exception as e:
+                        print(e)
+                    try:
+                        old_user_phone_num_list_new.remove('')
+                    except:
+                        pass
+                    passUserItemRec.user_phone_num = old_user_phone_num_list_new
+                if editingPassUserItemKind == 'pad':
+                    old_user_pad_sn_list = passUserItemRec.user_pad_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                    old_user_pad_sn_list_new = old_user_pad_sn_list.split(',')
+                    try:
+                        old_user_pad_sn_list_new.remove(self.item_sn)
+                    except Exception as e:
+                        print(e)
+                    try:
+                        old_user_pad_sn_list_new.remove('')
+                    except:
+                        pass
+                    passUserItemRec.user_pad_sn = old_user_pad_sn_list_new
+                if editingPassUserItemKind == '微信号':
+                    old_user_wechat_name_list = passUserItemRec.user_wechat_name.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                    old_user_wechat_name_list_new = old_user_wechat_name_list.split(',')
+                    old_user_wechat_name_list_new.remove(self.item_sn)
+                    try:
+                        old_user_wechat_name_list_new.remove('')
+                    except:
+                        pass
+                    passUserItemRec.user_wechat_name = old_user_wechat_name_list_new
+                if editingPassUserItemKind == '千牛账号':
+                    old_user_qianniu_name_list = passUserItemRec.user_qianniu_name.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                    old_user_qianniu_name_list_new = old_user_qianniu_name_list.split(',')
+                    try:
+                        old_user_qianniu_name_list_new.remove(self.item_sn)
+                    except Exception as e:
+                        print(e)
+                    try:
+                        old_user_qianniu_name_list_new.remove('')
+                    except:
+                        pass
+                    passUserItemRec.user_qianniu_name = old_user_qianniu_name_list_new
+                if editingPassUserItemKind == '办公设备':
+                    old_user_otheritems_list = passUserItemRec.user_otheritems.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                    old_user_otheritems_list_new = old_user_otheritems_list.split(',')
+                    try:
+                        old_user_otheritems_list_new.remove(self.item_sn)
+                    except Exception as e:
+                        print(e)
+                    try:
+                        old_user_otheritems_list_new.remove('')
+                    except:
+                        pass
+                    passUserItemRec.user_otheritems = old_user_otheritems_list_new
+                if editingPassUserItemKind == '台式电脑':
+                    passUserItemRec.user_pc_sn = ''
+                if editingPassUserItemKind == '笔记本电脑':
+                    passUserItemRec.user_notebook_sn = ''
+                passUserItemRec.save()
                 try:
-                    old_user_phone_sn_list_new.remove(self.item_sn)
-                except Exception as e:
-                    print(e)
-                try:
-                    old_user_phone_sn_list_new.remove('')
+                    editingItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
+                    item_location = i_i.objects.get( item_sn = self.item_sn ).item_location
+                    item_statu = i_i.objects.get( item_sn = self.item_sn ).item_statu
+                    q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = item_location )[0] # 更新该部门闲置物资库存
+                    if item_statu == '闲置':                    
+                        item_stock_num_now = q_i_s.item_stock_num - 1
+                        q_i_s.item_stock_num = item_stock_num_now
+                        q_i_s.save()
                 except:
                     pass
-                passUserItemRec.user_phone_sn = old_user_phone_sn_list_new
-            if editingPassUserItemKind == '显示器':
-                old_user_monitor_sn_list = passUserItemRec.user_monitor_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
-                old_user_monitor_sn_list_new = old_user_monitor_sn_list.split(',')
-                try:
-                    old_user_monitor_sn_list_new.remove(self.item_sn)
-                except Exception as e:
-                    print(e)
-                try:
-                    old_user_monitor_sn_list_new.remove('')
-                except:
-                    pass
-                passUserItemRec.user_monitor_sn = old_user_monitor_sn_list_new
-            if editingPassUserItemKind == '手机号码':
-                old_user_phone_num_list = passUserItemRec.user_phone_num.replace('[', '').replace(']', '').replace("'","").replace(' ','')
-                old_user_phone_num_list_new = old_user_phone_num_list.split(',')
-                try:
-                    old_user_phone_num_list_new.remove(self.item_sn)
-                except Exception as e:
-                    print(e)
-                try:
-                    old_user_phone_num_list_new.remove('')
-                except:
-                    pass
-                passUserItemRec.user_phone_num = old_user_phone_num_list_new
-            if editingPassUserItemKind == 'pad':
-                old_user_pad_sn_list = passUserItemRec.user_pad_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
-                old_user_pad_sn_list_new = old_user_pad_sn_list.split(',')
-                try:
-                    old_user_pad_sn_list_new.remove(self.item_sn)
-                except Exception as e:
-                    print(e)
-                try:
-                    old_user_pad_sn_list_new.remove('')
-                except:
-                    pass
-                passUserItemRec.user_pad_sn = old_user_pad_sn_list_new
-            if editingPassUserItemKind == '微信号':
-                old_user_wechat_name_list = passUserItemRec.user_wechat_name.replace('[', '').replace(']', '').replace("'","").replace(' ','')
-                old_user_wechat_name_list_new = old_user_wechat_name_list.split(',')
-                old_user_wechat_name_list_new.remove(self.item_sn)
-                try:
-                    old_user_wechat_name_list_new.remove('')
-                except:
-                    pass
-                passUserItemRec.user_wechat_name = old_user_wechat_name_list_new
-            if editingPassUserItemKind == '千牛账号':
-                old_user_qianniu_name_list = passUserItemRec.user_qianniu_name.replace('[', '').replace(']', '').replace("'","").replace(' ','')
-                old_user_qianniu_name_list_new = old_user_qianniu_name_list.split(',')
-                try:
-                    old_user_qianniu_name_list_new.remove(self.item_sn)
-                except Exception as e:
-                    print(e)
-                try:
-                    old_user_qianniu_name_list_new.remove('')
-                except:
-                    pass
-                passUserItemRec.user_qianniu_name = old_user_qianniu_name_list_new
-            if editingPassUserItemKind == '办公设备':
-                old_user_otheritems_list = passUserItemRec.user_otheritems.replace('[', '').replace(']', '').replace("'","").replace(' ','')
-                old_user_otheritems_list_new = old_user_otheritems_list.split(',')
-                try:
-                    old_user_otheritems_list_new.remove(self.item_sn)
-                except Exception as e:
-                    print(e)
-                try:
-                    old_user_otheritems_list_new.remove('')
-                except:
-                    pass
-                passUserItemRec.user_otheritems = old_user_otheritems_list_new
-            if editingPassUserItemKind == '台式电脑':
-                passUserItemRec.user_pc_sn = ''
-            if editingPassUserItemKind == '笔记本电脑':
-                passUserItemRec.user_notebook_sn = ''
-            passUserItemRec.save()
-            try:
+                q_i_i = i_i.objects.get( item_sn = self.item_sn )
+                q_i_i.delete()
+                info = '{}已删除！'.format(self.item_sn)                              
+                getDeleteItemInfoView = getItemInfo(pageSep = self.pageSep, name = self.name, num = self.num)
+                getDeleteItemInfoData = getDeleteItemInfoView.getItemInfoData()
+                getDeleteItemInfoData['userinfo']['info'] = info
+                print(getDeleteItemInfoData)
+                return getDeleteItemInfoData
+            if item_statu == '报废': # 删除原状态为报废的资产
                 editingItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
                 item_location = i_i.objects.get( item_sn = self.item_sn ).item_location
                 item_statu = i_i.objects.get( item_sn = self.item_sn ).item_statu
-                q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = item_location )[0] # 更新该部门闲置物资库存
-                if item_statu == '闲置':                    
-                    item_stock_num_now = q_i_s.item_stock_num - 1
-                    q_i_s.item_stock_num = item_stock_num_now
-                    q_i_s.save()
-            except:
-                pass
-            q_i_i = i_i.objects.get( item_sn = self.item_sn )
-            q_i_i.delete()
-            info = '{}已删除！'.format(self.item_sn)                              
-            getDeleteItemInfoView = getItemInfo(pageSep = self.pageSep, name = self.name, num = self.num)
-            getDeleteItemInfoData = getDeleteItemInfoView.getItemInfoData()
-            getDeleteItemInfoData['userinfo']['info'] = info
-            print(getDeleteItemInfoData)
-            return getDeleteItemInfoData
-        except:  # 删除原状态为报废的资产
-            try:
-                editingItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
-                item_location = i_i.objects.get( item_sn = self.item_sn ).item_location
-                item_statu = i_i.objects.get( item_sn = self.item_sn ).item_statu
-                q_i_s = i_s.objects.get( item_sn = self.item_sn )
-                q_i_s.delete()
-                q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = item_location )[0] # 更新该部门闲置物资库存   
+                q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = item_location )[0] # 更新该部门闲置物资库存 
+                print('item_destory_num_now//////////////', q_i_s.item_destory_num)  
                 item_destory_num_now = q_i_s.item_destory_num - 1
                 q_i_s.item_destory_num = item_destory_num_now
                 q_i_s.save()
                 q_i_i = i_i.objects.get( item_sn = self.item_sn )
                 q_i_i.delete()
-            except:
-                pass
-            info = '{}已删除！'.format(self.item_sn)                              
-            getDeleteItemInfoView = getItemInfo(pageSep = self.pageSep, name = self.name, num = self.num)
-            getDeleteItemInfoData = getDeleteItemInfoView.getItemInfoData()
-            getDeleteItemInfoData['userinfo']['info'] = info
-            print(getDeleteItemInfoData)
-            return getDeleteItemInfoData
+                info = '{}已删除！'.format(self.item_sn)                              
+                getDeleteItemInfoView = getItemInfo(pageSep = self.pageSep, name = self.name, num = self.num)
+                getDeleteItemInfoData = getDeleteItemInfoView.getItemInfoData()
+                getDeleteItemInfoData['userinfo']['info'] = info
+                print(getDeleteItemInfoData)
+                return getDeleteItemInfoData
+        except:
+            pass
+        
 
 
 
