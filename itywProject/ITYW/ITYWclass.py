@@ -146,10 +146,15 @@ class DeleteItemInfo(getItemInfo):
             oldItemLocation = i_i.objects.get( item_sn = self.item_sn ).item_location   # 资产原所在位置
             passUserItemRec = u_i_i.objects.filter( user_workid = self.item_now_user_workid ).filter( user_location = oldItemLocation )[0]    # 删除用户表里的设备信息
             editingPassUserItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
+            print('self.item_now_user_workid!!!!!!!!!!', self.item_now_user_workid)
+            print('editingPassUserItemKind!!!!!!!!!!', editingPassUserItemKind)
             if editingPassUserItemKind == '手机':
                 old_user_phone_sn_list = passUserItemRec.user_phone_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                 old_user_phone_sn_list_new = old_user_phone_sn_list.split(',')
-                old_user_phone_sn_list_new.remove(self.item_sn)
+                try:
+                    old_user_phone_sn_list_new.remove(self.item_sn)
+                except Exception as e:
+                    print(e)
                 try:
                     old_user_phone_sn_list_new.remove('')
                 except:
@@ -158,7 +163,10 @@ class DeleteItemInfo(getItemInfo):
             if editingPassUserItemKind == '显示器':
                 old_user_monitor_sn_list = passUserItemRec.user_monitor_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                 old_user_monitor_sn_list_new = old_user_monitor_sn_list.split(',')
-                old_user_monitor_sn_list_new.remove(self.item_sn)
+                try:
+                    old_user_monitor_sn_list_new.remove(self.item_sn)
+                except Exception as e:
+                    print(e)
                 try:
                     old_user_monitor_sn_list_new.remove('')
                 except:
@@ -167,7 +175,10 @@ class DeleteItemInfo(getItemInfo):
             if editingPassUserItemKind == '手机号码':
                 old_user_phone_num_list = passUserItemRec.user_phone_num.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                 old_user_phone_num_list_new = old_user_phone_num_list.split(',')
-                old_user_phone_num_list_new.remove(self.item_sn)
+                try:
+                    old_user_phone_num_list_new.remove(self.item_sn)
+                except Exception as e:
+                    print(e)
                 try:
                     old_user_phone_num_list_new.remove('')
                 except:
@@ -176,7 +187,10 @@ class DeleteItemInfo(getItemInfo):
             if editingPassUserItemKind == 'pad':
                 old_user_pad_sn_list = passUserItemRec.user_pad_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                 old_user_pad_sn_list_new = old_user_pad_sn_list.split(',')
-                old_user_pad_sn_list_new.remove(self.item_sn)
+                try:
+                    old_user_pad_sn_list_new.remove(self.item_sn)
+                except Exception as e:
+                    print(e)
                 try:
                     old_user_pad_sn_list_new.remove('')
                 except:
@@ -194,7 +208,10 @@ class DeleteItemInfo(getItemInfo):
             if editingPassUserItemKind == '千牛账号':
                 old_user_qianniu_name_list = passUserItemRec.user_qianniu_name.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                 old_user_qianniu_name_list_new = old_user_qianniu_name_list.split(',')
-                old_user_qianniu_name_list_new.remove(self.item_sn)
+                try:
+                    old_user_qianniu_name_list_new.remove(self.item_sn)
+                except Exception as e:
+                    print(e)
                 try:
                     old_user_qianniu_name_list_new.remove('')
                 except:
@@ -203,7 +220,10 @@ class DeleteItemInfo(getItemInfo):
             if editingPassUserItemKind == '办公设备':
                 old_user_otheritems_list = passUserItemRec.user_otheritems.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                 old_user_otheritems_list_new = old_user_otheritems_list.split(',')
-                old_user_otheritems_list_new.remove(self.item_sn)
+                try:
+                    old_user_otheritems_list_new.remove(self.item_sn)
+                except Exception as e:
+                    print(e)
                 try:
                     old_user_otheritems_list_new.remove('')
                 except:
