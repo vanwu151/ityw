@@ -307,7 +307,7 @@ class AddedItemInfo(getItemInfo):
             getItemInfoView = getItemInfo(pageSep = self.pageSep, name = self.name, num = self.num)
             getItemInfoData = getItemInfoView.getItemInfoData()
             getItemInfoData['userinfo']['info'] = info
-            return getItemInfoData
+            return getItemInfoData        
         except:                        
             try:
                 uii = u_i_i.objects.filter( user_workid = self.item_now_user_workid )[0]  # 利用工号判断用户资产表里有无该员工记录  
@@ -618,7 +618,8 @@ class AddedItemInfo(getItemInfo):
                         pass
                 uii.save()
                 
-            except:
+            except Exception as e:
+                print('!!!!!!!!!!!!!!!!!!!!!!!!!!', e)
                 SaveItemInfo = i_i(item_inbound_date = self.item_inbound_date, item_name = self.item_name, item_kind = self.item_kind, item_sn = self.item_sn, 
                             item_now_user = self.item_now_user, item_now_user_workid = self.item_now_user_workid, item_statu = self.item_statu,
                             item_location = self.item_location, item_info = self.item_info)

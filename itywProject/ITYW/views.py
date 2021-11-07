@@ -296,6 +296,26 @@ def searchitemsn(request):
             except:
                 pass
 
+
+def searchitemstock(request):
+    if request.session.get('is_login',None):
+        num = request.GET.get('index','1')
+        request.session['index'] = num
+        try:
+            pageSep = request.session['pageSep']
+        except:
+            pageSep = 10 
+        name = request.session['username']
+        if request.method == "POST":
+            searchitemstockinfo = request.POST.get('searchitemstockinfo')
+            request.session['searchitemstockinfo'] = searchitemstockinfo
+            getSearchItemStockInfoView = getSearchItemStockInfo( num = num, pageSep = pageSep, name = name, searchitemstockinfo = searchitemstockinfo )
+            getSearchItemStockInfoData = getSearchItemStockInfoView.getSearchItemStockInfoData()
+            try:
+                return render(request, 'Kpi/showitemstockinfo.html', getSearchItemStockInfoData)
+            except:
+                pass
+
 def searchuserinfo(request):
     if request.session.get('is_login',None):
         num = request.GET.get('index','1')
@@ -309,6 +329,7 @@ def searchuserinfo(request):
             action = request.POST.get('go')
             if action == '搜索':
                 searchuser = request.POST.get('searchuser')
+                request.session['searchuser'] = searchuser
                 getSearchUserItemsView = getSearchUserItems( num = num, pageSep = pageSep, name = name, searchuser = searchuser )
                 getSearchUserItemsData = getSearchUserItemsView.getSearchUserItemsData()
             if action == 'ALL':
@@ -319,8 +340,29 @@ def searchuserinfo(request):
             except:
                 pass
 
+def itemstockinfo(request):
+    if request.session.get('is_login',None):
+        num = request.GET.get('index','1')
+        request.session['index'] = num
+        try:
+            pageSep = request.session['pageSep']
+        except:
+            pageSep = 10
+        if request.method == "GET":
+            name = request.session['username']
+            try:
+                searchitemstockinfo = request.session['searchitemstockinfo']
+                getSearchItemStockInfoView = getSearchItemStockInfo( num = num, pageSep = pageSep, name = name, searchitemstockinfo = searchitemstockinfo )
+                getItemStockInfoData = getSearchItemStockInfoView.getSearchItemStockInfoData()
+            except:
+                getItemStockInfoView = getItemStockInfo(name = name, num = num, pageSep = pageSep)
+                getItemStockInfoData = getItemStockInfoView.getItemStockData()
+            try:
+                return render(request, 'Kpi/showitemstockinfo.html', getItemStockInfoData)
+            except:
+                pass
 
-def searchitemstock(request):
+def useriteminfo(request):
     if request.session.get('is_login',None):
         num = request.GET.get('index','1')
         request.session['index'] = num
@@ -328,16 +370,19 @@ def searchitemstock(request):
             pageSep = request.session['pageSep']
         except:
             pageSep = 10 
-        name = request.session['username']
-        if request.method == "POST":
-            searchitemstockinfo = request.POST.get('searchitemstockinfo')
-            getSearchItemStockInfoView = getSearchItemStockInfo( num = num, pageSep = pageSep, name = name, searchitemstockinfo = searchitemstockinfo )
-            getSearchItemStockInfoData = getSearchItemStockInfoView.getSearchItemStockInfoData()
+        if request.method == "GET":
+            name = request.session['username']
             try:
-                return render(request, 'Kpi/showitemstockinfo.html', getSearchItemStockInfoData)
+                searchuser = request.session['searchuser']
+                getSearchUserItemsView = getSearchUserItems( num = num, pageSep = pageSep, name = name, searchuser = searchuser )
+                getUserItemsInfoData = getSearchUserItemsView.getSearchUserItemsData()
+            except:
+                getUserItemsInfoView = getUserItemsInfo(name = name, num = num, pageSep = pageSep)
+                getUserItemsInfoData = getUserItemsInfoView.getUserItemsData()
+            try:
+                return render(request, 'Kpi/showuseriteminfo.html', getUserItemsInfoData)
             except:
                 pass
-
 
 def manageiteminfo(request):
     if request.session.get('is_login',None):
@@ -382,42 +427,6 @@ def PageItemInfo(request):
                 return render(request, 'Kpi/showmanageiteminfo.html', getItemInfoData)
             except:
                 pass
-
-def useriteminfo(request):
-    if request.session.get('is_login',None):
-        num = request.GET.get('index','1')
-        request.session['index'] = num
-        try:
-            pageSep = request.session['pageSep']
-        except:
-            pageSep = 10 
-        if request.method == "GET":
-            name = request.session['username']
-            getUserItemsInfoView = getUserItemsInfo(name = name, num = num, pageSep = pageSep)
-            getUserItemsInfoData = getUserItemsInfoView.getUserItemsData()
-            try:
-                return render(request, 'Kpi/showuseriteminfo.html', getUserItemsInfoData)
-            except:
-                pass
-
-def itemstockinfo(request):
-    if request.session.get('is_login',None):
-        num = request.GET.get('index','1')
-        request.session['index'] = num
-        try:
-            pageSep = request.session['pageSep']
-        except:
-            pageSep = 10
-        if request.method == "GET":
-            name = request.session['username']
-            getItemStockInfoView = getItemStockInfo(name = name, num = num, pageSep = pageSep)
-            getItemStockInfoData = getItemStockInfoView.getItemStockData()
-            try:
-                return render(request, 'Kpi/showitemstockinfo.html', getItemStockInfoData)
-            except:
-                pass
-
- 
 
 def PageUserItem(request):
     if request.session.get('is_login',None):

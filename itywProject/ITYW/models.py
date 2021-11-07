@@ -14,15 +14,15 @@ class useritemsinfo(models.Model):
 	user_name = models.CharField(max_length=50) # = item_now_user
 	user_workid = models.CharField(max_length=20, default="")
 	user_location = models.CharField(max_length=50, default="")  # 用户资产现在所在位置 = item_location
-	user_pc_sn = models.CharField(max_length=1000)
-	user_notebook_sn = models.CharField(max_length=1000)
-	user_phone_sn = models.CharField(max_length=1000)
-	user_pad_sn = models.CharField(max_length=1000)
-	user_monitor_sn = models.CharField(max_length=1000)
-	user_phone_num = models.CharField(max_length=1000)
+	user_pc_sn = models.CharField(max_length=2000)
+	user_notebook_sn = models.CharField(max_length=4000)
+	user_phone_sn = models.CharField(max_length=1500)
+	user_pad_sn = models.CharField(max_length=1500)
+	user_monitor_sn = models.CharField(max_length=2000)
+	user_phone_num = models.CharField(max_length=1500)
 	user_wechat_name = models.CharField(max_length=1000)
 	user_qianniu_name = models.CharField(max_length=1000)
-	user_otheritems = models.CharField(max_length=1000)
+	user_otheritems = models.CharField(max_length=5000)
 
 	def __str__(self):
 		return self.user_name
