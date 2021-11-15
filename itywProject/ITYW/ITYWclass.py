@@ -768,6 +768,7 @@ class getModedItemInfo(getItemDetail):
         self.item_now_user_workid = kwds['item_now_user_workid']
         self.item_pass_user_workid = kwds['item_pass_user_workid']
         self.item_change_info = kwds['item_change_info']
+        self.item_pass_info = kwds['item_pass_info']
 
     def getModedItemsData(self):
         try:
@@ -792,10 +793,12 @@ class getModedItemInfo(getItemDetail):
             if self.item_statu == '在用':
                 editingItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind                
                 if editingItemKind != '台式电脑' and editingItemKind != '笔记本电脑':
+                    print('!!!!!!!!!!!!!!', self.item_pass_info)
                     s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                     item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                    item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info)
+                    item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
                     s.save()  # 更新资产变更表
+                    print('666666666666666666666666666666666666666')
                     q_i_i = i_i.objects.get( item_sn = self.item_sn )
                     item_old_location = q_i_i.item_location
                     q_i_i.item_statu = self.item_statu
@@ -976,7 +979,7 @@ class getModedItemInfo(getItemDetail):
                             q_i_s.save()
                         s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                                     item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                                    item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info)
+                                    item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
                         s.save()  # 更新资产变更表
                         q_i_i = i_i.objects.get( item_sn = self.item_sn )    
                         if q_i_i.item_statu == '闲置' and (self.item_pass_user_workid != self.item_now_user_workid):
@@ -1028,7 +1031,7 @@ class getModedItemInfo(getItemDetail):
                         try:
                             s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                                         item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                                        item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info)
+                                        item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
                             s.save()  # 更新资产变更表
                             q_i_i = i_i.objects.get( item_sn = self.item_sn )
                             if q_i_i.item_statu == '闲置':
@@ -1090,7 +1093,7 @@ class getModedItemInfo(getItemDetail):
                             q_i_s.save()
                         s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                                     item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                                    item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info)
+                                    item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
                         s.save()  # 更新资产变更表
                         q_i_i = i_i.objects.get( item_sn = self.item_sn )
                         if q_i_i.item_statu == '闲置' and (self.item_pass_user_workid != self.item_now_user_workid):
@@ -1144,7 +1147,7 @@ class getModedItemInfo(getItemDetail):
                         try:
                             s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                                         item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                                        item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info)
+                                        item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
                             s.save()  # 更新资产变更表
                             q_i_i = i_i.objects.get( item_sn = self.item_sn )
                             if q_i_i.item_statu == '闲置':
@@ -1182,7 +1185,7 @@ class getModedItemInfo(getItemDetail):
             if self.item_statu == '闲置':
                 s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                                 item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                                item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info)
+                                item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
                 s.save()  # 更新资产变更表
                 editingItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
                 if editingItemKind != '台式电脑' and editingItemKind != '笔记本电脑':
@@ -1476,7 +1479,7 @@ class getModedItemInfo(getItemDetail):
             if self.item_statu == '报废':
                 s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                                 item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                                item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info)
+                                item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
                 s.save()  # 更新资产变更表
                 editingItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
                 q_i_i = i_i.objects.get( item_sn = self.item_sn )
@@ -1634,6 +1637,7 @@ class getSearchItemInfo:
             item_statulist = []
             item_now_user_workidlist = []
             item_change_infolist = []
+            item_pass_infolist = []
             print( q_ici )
             for m in q_ici:
                 item_change_datelist.append( m.item_change_date )
@@ -1642,7 +1646,8 @@ class getSearchItemInfo:
                 item_now_user_workidlist.append( m.item_now_user_workid )
                 item_statulist.append( m.item_statu )
                 item_change_infolist.append( m.item_change_info )
-            ItemChangeInfoList = zip( item_change_datelist, item_pass_userlist, item_now_userlist, item_now_user_workidlist, item_statulist, item_change_infolist )
+                item_pass_infolist.append( m.item_pass_info )
+            ItemChangeInfoList = zip( item_change_datelist, item_pass_userlist, item_now_userlist, item_now_user_workidlist, item_statulist, item_change_infolist, item_pass_infolist )
             SearchItemData = {'userinfo': {'item_inbound_date': item_inbound_date,
                                 'item_name': item_name,
                                 'item_statu':item_statu, 

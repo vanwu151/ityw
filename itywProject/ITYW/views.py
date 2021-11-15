@@ -184,6 +184,9 @@ def Moditem(request):
             item_now_user = request.POST.get('item_now_user')
             item_now_user_workid = request.POST.get('item_now_user_workid')
             item_change_info = request.POST.get('item_change_info')
+            print('555555555555555555544444444444444444444443')
+            item_pass_info = i_i.objects.get( item_sn = item_sn ).item_info
+            print(item_pass_info, '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             if action == "修改":                
                 if item_statu == '在用':
                     try:
@@ -194,7 +197,7 @@ def Moditem(request):
                                 getModedItemInfoView = getModedItemInfo( name = name, item_sn = item_sn , item_change_date = item_change_date,
                                                                         item_statu = item_statu, item_change_location = item_change_location, 
                                                                         item_now_user = item_now_user, item_now_user_workid = item_now_user_workid,
-                                                                        item_change_info = item_change_info, item_pass_user_workid = item_pass_user_workid)                    
+                                                                        item_change_info = item_change_info, item_pass_user_workid = item_pass_user_workid, item_pass_info = item_pass_info)                    
                                 getModedItemInfoData = getModedItemInfoView.getModedItemsData()
                                 return render(request, 'Kpi/showedititeminfo.html', getModedItemInfoData)
                             else:
@@ -225,7 +228,7 @@ def Moditem(request):
                             getModedItemInfoView = getModedItemInfo( name = name, item_sn = item_sn , item_change_date = item_change_date,
                                                                 item_statu = item_statu, item_change_location = item_change_location, 
                                                                 item_now_user = item_now_user,  item_now_user_workid = item_now_user_workid,
-                                                                item_change_info = item_change_info, item_pass_user_workid = item_pass_user_workid)
+                                                                item_change_info = item_change_info, item_pass_user_workid = item_pass_user_workid, item_pass_info = item_pass_info)
                             getModedItemInfoData = getModedItemInfoView.getModedItemsData()
                             # info = '{}资产信息已变更！'.format(item_sn)
                             # getModedItemInfoData['userinfo']['info'] = info
@@ -251,7 +254,7 @@ def Moditem(request):
                             getModedItemInfoView = getModedItemInfo( name = name, item_sn = item_sn , item_change_date = item_change_date,
                                                                     item_statu = item_statu, item_change_location = item_change_location, 
                                                                     item_now_user = item_now_user, item_now_user_workid = item_now_user_workid,
-                                                                    item_change_info = item_change_info, item_pass_user_workid = item_pass_user_workid)
+                                                                    item_change_info = item_change_info, item_pass_user_workid = item_pass_user_workid, item_pass_info = item_pass_info)
                             getModedItemInfoData = getModedItemInfoView.getModedItemsData()
                             info = '{}资产信息已变更！'.format(item_sn)
                             getModedItemInfoData['userinfo']['info'] = info

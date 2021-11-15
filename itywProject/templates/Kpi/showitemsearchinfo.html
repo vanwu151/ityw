@@ -121,10 +121,10 @@
                                                 <tr>                                                
                                                     <td class="text-navy">资产变更记录</td> 
                                                     <td>
-                                                        {% for item_change_date, item_pass_user, item_now_user, item_now_user_workid, item_statu, item_change_info in userinfo.ItemChangeInfoList %}                                                            
+                                                        {% for item_change_date, item_pass_user, item_now_user, item_now_user_workid, item_statu, item_change_info, item_pass_info in userinfo.ItemChangeInfoList %}                                                            
                                                             {{ item_change_date|date:"Y-m-d" }}： 由用户“{{ item_pass_user }}”
-                                                            变更给用户“{{ item_now_user }}”工号“{{ item_now_user_workid }}”，变更资产状态为“{{ item_statu }}”,
-                                                            变更后的资产概况为“{{ item_change_info }}”<br />
+                                                            变更给用户“{{ item_now_user }}”工号“{{ item_now_user_workid }}”，原资产信息：“{{ item_pass_info }}”,
+                                                            变更后的资产信息：“{{ item_change_info }}”<br />
                                                         {% endfor %}                                                                                                                      
                                                     </td>        
                                                 </tr>
