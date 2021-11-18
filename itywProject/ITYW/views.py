@@ -150,14 +150,6 @@ def EditItemlogin(request):
 
 def EditItemloginInfo(request):
     try:
-        # try:
-        #     num = request.session['index']
-        # except:
-        #     num = '1'
-        # try:
-        #     pageSep = request.session['pageSep']
-        # except:
-        #     pageSep = 10
         if request.method == "POST":
             try:
                 UserName=request.POST.get('user')
@@ -175,7 +167,7 @@ def EditItemloginInfo(request):
                     return render(request, 'Kpi/showedititeminfo.html', ItemDetailData)
                     #return render(request, 'Kpi/showmanageiteminfo.html', getItemInfoData)
                 else:
-                    info = '用户名或密码错误！'
+                    info = '用户名或密码错误，请联系管理员！'
                     return render(request, 'Kpi/EditItemLogin.html', {'userinfo': {'info': info}})
             except:
                 info = '登录信息不能为空！'
@@ -254,7 +246,8 @@ def Moditem(request):
                             ItemDetailData = ItemDetailDataView.getItemDetailData()
                             ItemDetailData['userinfo']['info'] = info
                             return render(request, 'Kpi/showedititeminfo.html', ItemDetailData)
-                    except:
+                    except Exception as e:
+                        print(e)
                         info = '用户：{}不存在！资产信息未变更，请填写用户IT资产表里存在的用户！'.format(item_now_user)
                         ItemDetailDataView = getItemDetail( name = name, item_sn = item_sn )
                         ItemDetailData = ItemDetailDataView.getItemDetailData()
@@ -282,7 +275,8 @@ def Moditem(request):
                             ItemDetailData = ItemDetailDataView.getItemDetailData()
                             ItemDetailData['userinfo']['info'] = info
                             return render(request, 'Kpi/showedititeminfo.html', ItemDetailData)
-                    except:
+                    except Exception as e:
+                        print(e)
                         info = '用户：{}不存在！资产信息未变更，请填写用户IT资产表里存在的用户！'.format(item_now_user)
                         ItemDetailDataView = getItemDetail( name = name, item_sn = item_sn )
                         ItemDetailData = ItemDetailDataView.getItemDetailData()
@@ -307,8 +301,8 @@ def Moditem(request):
                             ItemDetailData = ItemDetailDataView.getItemDetailData()
                             ItemDetailData['userinfo']['info'] = info
                             return render(request, 'Kpi/showedititeminfo.html', ItemDetailData)
-                    except:
-                        pass
+                    except Exception as e:
+                        print(e) 
 
 
 def searchitem(request):

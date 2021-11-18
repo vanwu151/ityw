@@ -779,11 +779,12 @@ class getModedItemInfo(getItemDetail):
             oldItemLocation = q_i_i.item_location
             try:
                 passUserItemRec = u_i_i.objects.get( user_workid = self.item_pass_user_workid )
-            except:
+            except Exception as e:
+                print('passUserItemRec111', e)
                 try:
                     passUserItemRec = u_i_i.objects.filter( user_workid = self.item_pass_user_workid ).filter( user_location = oldItemLocation )[0]
-                except:
-                    pass
+                except Exception as e:
+                    print('passUserItemRec222', e)
             try: 
                 nowUserItemRec = u_i_i.objects.get( user_workid = self.item_now_user_workid )
             except:
@@ -1608,8 +1609,8 @@ class getModedItemInfo(getItemDetail):
             NowItemDetailData = NowItemDetailDataView.getItemDetailData()
             NowItemDetailData['userinfo']['info'] = info
             return NowItemDetailData            
-        except:
-            pass
+        except Exception as e:
+            print(e)
                     
 
 class getSearchItemInfo:
