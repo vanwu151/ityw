@@ -42,6 +42,8 @@ urlpatterns = [
     path('searchitemsn/', views.searchitemsn),
     path('searchuserinfo/', views.searchuserinfo),
     path('searchitemstock/', views.searchitemstock),
+    path('EditItemlogin/', views.EditItemlogin),
+    path('EditItemloginInfo/', views.EditItemloginInfo),
     path('admin/', admin.site.urls),
     # path('PageFunc/', views.PageFunc),
     url(r'^static/(?P<path>.*)$', static.serve,

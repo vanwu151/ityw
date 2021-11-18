@@ -139,6 +139,49 @@ def Additem(request):
             except:
                 pass
 
+def EditItemlogin(request):
+    if request.method == "POST":
+        item_sn = request.POST.get('item_sn')
+        item_now_user_workid = request.POST.get('item_now_user_workid')
+        request.session['item_sn'] = item_sn
+        request.session['item_pass_user_workid'] = item_now_user_workid
+        return render(request, 'Kpi/EditItemLogin.html')
+
+
+def EditItemloginInfo(request):
+    try:
+        # try:
+        #     num = request.session['index']
+        # except:
+        #     num = '1'
+        # try:
+        #     pageSep = request.session['pageSep']
+        # except:
+        #     pageSep = 10
+        if request.method == "POST":
+            try:
+                UserName=request.POST.get('user')
+                UserPass=request.POST.get('pwd')
+                q = a_i.objects.get(admin_name=UserName)
+                name = q.admin_name
+                pwd  = q.admin_password
+                if UserName == name and check_password(UserPass,pwd) is True:
+                    request.session['username'] = UserName    #定义session“username”字段并令session中username字段值为登录的用户名
+                    request.session['is_login'] = True        #定义session“is_login”字段并令该字段值为"True"表示会话已经创建           
+                    item_sn = request.session['item_sn']
+                    item_now_user_workid = request.session['item_pass_user_workid']
+                    ItemDetailDataView = getItemDetail( name = name, item_sn = item_sn)
+                    ItemDetailData = ItemDetailDataView.getItemDetailData()
+                    return render(request, 'Kpi/showedititeminfo.html', ItemDetailData)
+                    #return render(request, 'Kpi/showmanageiteminfo.html', getItemInfoData)
+                else:
+                    info = '用户名或密码错误！'
+                    return render(request, 'Kpi/EditItemLogin.html', {'userinfo': {'info': info}})
+            except:
+                info = '登录信息不能为空！'
+                return render(request, 'Kpi/EditItemLogin.html', {'userinfo': {'info': info}})
+    except Exception as e:
+        print(e)
 
 def EditItem(request):
     if request.session.get('is_login', None):
@@ -159,7 +202,7 @@ def EditItem(request):
                     item_now_user_workid = request.POST.get('item_now_user_workid')
                     request.session['item_sn'] = item_sn
                     request.session['item_pass_user_workid'] = item_now_user_workid
-                    ItemDetailDataView = getItemDetail( name = name, item_sn = item_sn )
+                    ItemDetailDataView = getItemDetail( name = name, item_sn = item_sn)
                     ItemDetailData = ItemDetailDataView.getItemDetailData()
                     return render(request, 'Kpi/showedititeminfo.html', ItemDetailData)
                 if action == "删除":
@@ -184,9 +227,8 @@ def Moditem(request):
             item_now_user = request.POST.get('item_now_user')
             item_now_user_workid = request.POST.get('item_now_user_workid')
             item_change_info = request.POST.get('item_change_info')
-            print('555555555555555555544444444444444444444443')
             item_pass_info = i_i.objects.get( item_sn = item_sn ).item_info
-            print(item_pass_info, '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            change_info_user = request.session['username']
             if action == "修改":                
                 if item_statu == '在用':
                     try:
@@ -197,7 +239,7 @@ def Moditem(request):
                                 getModedItemInfoView = getModedItemInfo( name = name, item_sn = item_sn , item_change_date = item_change_date,
                                                                         item_statu = item_statu, item_change_location = item_change_location, 
                                                                         item_now_user = item_now_user, item_now_user_workid = item_now_user_workid,
-                                                                        item_change_info = item_change_info, item_pass_user_workid = item_pass_user_workid, item_pass_info = item_pass_info)                    
+                                                                        item_change_info = item_change_info, item_pass_user_workid = item_pass_user_workid, item_pass_info = item_pass_info, change_info_user = change_info_user)                    
                                 getModedItemInfoData = getModedItemInfoView.getModedItemsData()
                                 return render(request, 'Kpi/showedititeminfo.html', getModedItemInfoData)
                             else:
@@ -228,7 +270,7 @@ def Moditem(request):
                             getModedItemInfoView = getModedItemInfo( name = name, item_sn = item_sn , item_change_date = item_change_date,
                                                                 item_statu = item_statu, item_change_location = item_change_location, 
                                                                 item_now_user = item_now_user,  item_now_user_workid = item_now_user_workid,
-                                                                item_change_info = item_change_info, item_pass_user_workid = item_pass_user_workid, item_pass_info = item_pass_info)
+                                                                item_change_info = item_change_info, item_pass_user_workid = item_pass_user_workid, item_pass_info = item_pass_info, change_info_user = change_info_user)
                             getModedItemInfoData = getModedItemInfoView.getModedItemsData()
                             # info = '{}资产信息已变更！'.format(item_sn)
                             # getModedItemInfoData['userinfo']['info'] = info
@@ -254,7 +296,7 @@ def Moditem(request):
                             getModedItemInfoView = getModedItemInfo( name = name, item_sn = item_sn , item_change_date = item_change_date,
                                                                     item_statu = item_statu, item_change_location = item_change_location, 
                                                                     item_now_user = item_now_user, item_now_user_workid = item_now_user_workid,
-                                                                    item_change_info = item_change_info, item_pass_user_workid = item_pass_user_workid, item_pass_info = item_pass_info)
+                                                                    item_change_info = item_change_info, item_pass_user_workid = item_pass_user_workid, item_pass_info = item_pass_info, change_info_user = change_info_user)
                             getModedItemInfoData = getModedItemInfoView.getModedItemsData()
                             info = '{}资产信息已变更！'.format(item_sn)
                             getModedItemInfoData['userinfo']['info'] = info

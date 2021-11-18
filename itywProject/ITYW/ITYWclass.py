@@ -769,6 +769,7 @@ class getModedItemInfo(getItemDetail):
         self.item_pass_user_workid = kwds['item_pass_user_workid']
         self.item_change_info = kwds['item_change_info']
         self.item_pass_info = kwds['item_pass_info']
+        self.change_info_user = kwds['change_info_user']
 
     def getModedItemsData(self):
         try:
@@ -793,12 +794,12 @@ class getModedItemInfo(getItemDetail):
             if self.item_statu == '在用':
                 editingItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind                
                 if editingItemKind != '台式电脑' and editingItemKind != '笔记本电脑':
-                    print('!!!!!!!!!!!!!!', self.item_pass_info)
+                    #print('!!!!!!!!!!!!!!', self.item_pass_info)
                     s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                     item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                    item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
+                    item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info, change_info_user = self.change_info_user)
                     s.save()  # 更新资产变更表
-                    print('666666666666666666666666666666666666666')
+                    #print('666666666666666666666666666666666666666')
                     q_i_i = i_i.objects.get( item_sn = self.item_sn )
                     item_old_location = q_i_i.item_location
                     q_i_i.item_statu = self.item_statu
@@ -979,7 +980,7 @@ class getModedItemInfo(getItemDetail):
                             q_i_s.save()
                         s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                                     item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                                    item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
+                                    item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info, change_info_user = self.change_info_user)
                         s.save()  # 更新资产变更表
                         q_i_i = i_i.objects.get( item_sn = self.item_sn )    
                         if q_i_i.item_statu == '闲置' and (self.item_pass_user_workid != self.item_now_user_workid):
@@ -1031,21 +1032,21 @@ class getModedItemInfo(getItemDetail):
                         try:
                             s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                                         item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                                        item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
+                                        item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info, change_info_user = self.change_info_user)
                             s.save()  # 更新资产变更表
                             q_i_i = i_i.objects.get( item_sn = self.item_sn )
                             if q_i_i.item_statu == '闲置':
                                 oldItemLocation = q_i_i.item_location
                                 q_i_s = i_s.objects.filter( item_kind = editingItemKind ).filter( item_stock_location = oldItemLocation )[0] # 更新该部门闲置物资库存
                                 item_stock_num_now = q_i_s.item_stock_num - 1
-                                q_i_s.item_stock_num = item_stock_num_now
-                                q_i_s.save()
+                                q_i_s.item_stock_num = item_stock_num_now                               
+                                q_i_s.save()                           
                             q_i_i.item_statu = self.item_statu
                             q_i_i.item_location = self.item_change_location
                             q_i_i.item_now_user = self.item_now_user
                             q_i_i.item_now_user_workid = self.item_now_user_workid
                             q_i_i.item_info = self.item_change_info
-                            q_i_i.save()
+                            q_i_i.save()                           
                             if self.item_pass_user_workid == '':
                                 old_user_pc_list = passUserItemRec.user_pc_sn.replace('[', '').replace(']', '').replace("'","").replace(' ','')
                                 old_user_pc_list_new = old_user_pc_list.split(',')
@@ -1057,9 +1058,9 @@ class getModedItemInfo(getItemDetail):
                                 passUserItemRec.user_pc_sn = old_user_pc_list_new
                             else:
                                 passUserItemRec.user_pc_sn = ''
-                            nowUserItemRec.user_pc_sn = self.item_sn
-                        except:
-                            pass
+                            nowUserItemRec.user_pc_sn = self.item_sn                           
+                        except Exception as e:
+                            print(e)
                     info = '{}资产变更成功！'.format(self.item_sn)
                 if editingItemKind == '笔记本电脑':
                     try:                    
@@ -1093,7 +1094,7 @@ class getModedItemInfo(getItemDetail):
                             q_i_s.save()
                         s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                                     item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                                    item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
+                                    item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info, change_info_user = self.change_info_user)
                         s.save()  # 更新资产变更表
                         q_i_i = i_i.objects.get( item_sn = self.item_sn )
                         if q_i_i.item_statu == '闲置' and (self.item_pass_user_workid != self.item_now_user_workid):
@@ -1147,7 +1148,7 @@ class getModedItemInfo(getItemDetail):
                         try:
                             s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                                         item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                                        item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
+                                        item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info, change_info_user = self.change_info_user)
                             s.save()  # 更新资产变更表
                             q_i_i = i_i.objects.get( item_sn = self.item_sn )
                             if q_i_i.item_statu == '闲置':
@@ -1185,7 +1186,7 @@ class getModedItemInfo(getItemDetail):
             if self.item_statu == '闲置':
                 s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                                 item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                                item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
+                                item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info, change_info_user = self.change_info_user)
                 s.save()  # 更新资产变更表
                 editingItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
                 if editingItemKind != '台式电脑' and editingItemKind != '笔记本电脑':
@@ -1479,7 +1480,7 @@ class getModedItemInfo(getItemDetail):
             if self.item_statu == '报废':
                 s = i_c_i( item_change_date = self.item_change_date, item_name = OldItemDetailData['userinfo']['item_name'], item_change_location = self.item_change_location,
                                 item_statu = self.item_statu, item_sn = self.item_sn, item_pass_user = OldItemDetailData['userinfo']['item_pass_user'] ,item_now_user = self.item_now_user,
-                                item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info)
+                                item_now_user_workid = self.item_now_user_workid, item_change_info = self.item_change_info, item_pass_info = self.item_pass_info, change_info_user = self.change_info_user)
                 s.save()  # 更新资产变更表
                 editingItemKind = i_i.objects.get( item_sn = self.item_sn ).item_kind
                 q_i_i = i_i.objects.get( item_sn = self.item_sn )

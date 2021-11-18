@@ -49,7 +49,8 @@ class itemchangeinfo(models.Model):
 	item_now_user = models.CharField(max_length=20)   # = item_now_user
 	item_now_user_workid = models.CharField(max_length=20, default="")
 	item_change_info = models.CharField(max_length=500)
-	item_pass_info = models.CharField(max_length=500)
+	item_pass_info = models.CharField(max_length=1000)
+	change_info_user = models.CharField(max_length=20)
 
 	def __str__(self):
 		return self.item_name

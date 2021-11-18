@@ -79,7 +79,15 @@
                             <div class="ibox float-e-margins">
                                 <div class="ibox-title">
                                     <h5>{{ userinfo.info }}</h5>
-                                    <span class="label label-primary"><b>{{ userinfo.item_sn }}</b></span>
+                                    <span class="label label-primary">
+                                        <b>{{ userinfo.item_sn }}</b>
+                                    </span>
+                                    <form action="/EditItemlogin/" method="POST" enctype="multipart/form-data">
+                                        <input type="text"  hidden name="item_sn" value="{{ userinfo.item_sn }}"/>
+                                        <input type="text"  hidden name="item_now_user_workid" value="{{ userinfo.item_now_user_workid }}"/>
+                                        &emsp;                                           
+                                        <input type="submit" class="btn btn-xs btn-info" name="action" value="编辑"/>
+                                    </form>
                                 </div>
                                 <div class="ibox-content">
                                     <div class="text-left">
