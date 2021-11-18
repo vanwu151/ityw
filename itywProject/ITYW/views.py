@@ -346,10 +346,15 @@ def searchitemstock(request):
             pageSep = 10 
         name = request.session['username']
         if request.method == "POST":
-            searchitemstockinfo = request.POST.get('searchitemstockinfo')
-            request.session['searchitemstockinfo'] = searchitemstockinfo
-            getSearchItemStockInfoView = getSearchItemStockInfo( num = num, pageSep = pageSep, name = name, searchitemstockinfo = searchitemstockinfo )
-            getSearchItemStockInfoData = getSearchItemStockInfoView.getSearchItemStockInfoData()
+            action = request.POST.get('go')
+            if action == '搜索':
+                searchitemstockinfo = request.POST.get('searchitemstockinfo')
+                request.session['searchitemstockinfo'] = searchitemstockinfo
+                getSearchItemStockInfoView = getSearchItemStockInfo( num = num, pageSep = pageSep, name = name, searchitemstockinfo = searchitemstockinfo )
+                getSearchItemStockInfoData = getSearchItemStockInfoView.getSearchItemStockInfoData()
+            if action == 'ALL':
+                getItemStockInfoView = getItemStockInfo(name = name, num = num, pageSep = pageSep)
+                getSearchItemStockInfoData = getItemStockInfoView.getItemStockData()
             try:
                 return render(request, 'Kpi/showitemstockinfo.html', getSearchItemStockInfoData)
             except:

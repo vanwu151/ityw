@@ -1793,8 +1793,8 @@ class getItemStockInfo:
     def getItemStockData(self):
         try:            
             test = i_s.objects.all().exists()            
-            if test:
-                isII = i_s.objects.all().order_by( 'id' )
+            if test: #filter(Q(user_name__icontains=self.searchuser)|Q(user_workid__icontains=self.searchuser))
+                isII = i_s.objects.exclude(Q(item_stock_num = 0 ),Q( item_destory_num = 0 )).order_by( 'id' )
                 paginator = Paginator(isII, self.pageSep, 3)
                 # 值1：所有的数据
                 # 值2：每一页的数据
@@ -1850,7 +1850,7 @@ class getSearchItemStockInfo(getItemStockInfo):
         try:
             testItemStockInfoExists = i_s.objects.filter(Q(item_kind__icontains=self.searchitemstockinfo)|Q(item_stock_location__icontains=self.searchitemstockinfo)).exists()
             if testItemStockInfoExists:
-                sIS = i_s.objects.filter(Q(item_kind__icontains=self.searchitemstockinfo)|Q(item_stock_location__icontains=self.searchitemstockinfo)).order_by( 'id' )
+                sIS = i_s.objects.filter(Q(item_kind__icontains=self.searchitemstockinfo)|Q(item_stock_location__icontains=self.searchitemstockinfo)).exclude(Q(item_stock_num = 0 ),Q( item_destory_num = 0 )).order_by( 'id' )
                 paginator = Paginator(sIS, self.pageSep, 3)
                 # 值1：所有的数据
                 # 值2：每一页的数据
