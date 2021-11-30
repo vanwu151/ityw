@@ -37,7 +37,7 @@ class iteminfo(models.Model):
 	item_now_user = models.CharField(max_length=50)   # 资产现在所属用户
 	item_now_user_workid = models.CharField(max_length=20, default="")
 	item_location = models.CharField(max_length=50, default="")  # 资产现在所在位置  =  item_change_location
-	item_info = models.CharField(max_length=500) 
+	item_info = models.CharField(max_length=1000) 
 
 class itemchangeinfo(models.Model):
 	item_change_date = models.DateTimeField('更新时间', default=timezone.now)
@@ -51,6 +51,8 @@ class itemchangeinfo(models.Model):
 	item_change_info = models.CharField(max_length=500)
 	item_pass_info = models.CharField(max_length=1000)
 	change_info_user = models.CharField(max_length=20)
+	add_item_info = models.CharField(max_length=50, default="")
+	del_item_info = models.CharField(max_length=50, default="")
 
 	def __str__(self):
 		return self.item_name
