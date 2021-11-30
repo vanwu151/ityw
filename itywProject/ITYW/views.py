@@ -164,6 +164,15 @@ def EditItemloginInfo(request):
                     item_now_user_workid = request.session['item_pass_user_workid']
                     ItemDetailDataView = getItemDetail( name = name, item_sn = item_sn)
                     ItemDetailData = ItemDetailDataView.getItemDetailData()
+                    Lmj_ii =  i_i.objects.filter( item_sn = item_sn )[0]
+                    Lmj_info_list = Lmj_ii.item_info.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                    Lmj_info_list_new = Lmj_info_list.split(',')
+                    try:
+                        Lmj_info_list_new.remove('')
+                    except:
+                        pass
+                    Lmj_ii.item_info = Lmj_info_list_new
+                    ItemDetailData['userinfo']['Lmj_info_list'] = Lmj_ii.item_info
                     return render(request, 'Kpi/showedititeminfo.html', ItemDetailData)
                     #return render(request, 'Kpi/showmanageiteminfo.html', getItemInfoData)
                 else:
@@ -197,6 +206,15 @@ def EditItem(request):
                     request.session['item_pass_user_workid'] = item_now_user_workid
                     ItemDetailDataView = getItemDetail( name = name, item_sn = item_sn)
                     ItemDetailData = ItemDetailDataView.getItemDetailData()
+                    Lmj_ii =  i_i.objects.filter( item_sn = item_sn )[0]
+                    Lmj_info_list = Lmj_ii.item_info.replace('[', '').replace(']', '').replace("'","").replace(' ','')
+                    Lmj_info_list_new = Lmj_info_list.split(',')
+                    try:
+                        Lmj_info_list_new.remove('')
+                    except:
+                        pass
+                    Lmj_ii.item_info = Lmj_info_list_new
+                    ItemDetailData['userinfo']['Lmj_info_list'] = Lmj_ii.item_info
                     return render(request, 'Kpi/showedititeminfo.html', ItemDetailData)
                 if action == "删除":
                     item_sn = request.POST.get('item_sn')
@@ -206,86 +224,6 @@ def EditItem(request):
                     return render(request, 'Kpi/showmanageiteminfo.html', DeleteItemInfoData)
             except:
                 pass
-
-def AddLmjItem(request):
-    if request.session.get('is_login', None):
-        try:
-            if request.method == "POST":
-                item_sn = request.session['item_sn']
-                name = request.session['username']
-                action = request.POST.get('action')
-                Mod_Date = time.strftime("%Y-%m-%d", time.localtime())
-                item_name = i_i.objects.filter( item_sn = item_sn )[0].item_name
-                item_now_user = i_i.objects.filter( item_sn = item_sn )[0].item_now_user
-                item_now_user_workid = i_i.objects.filter( item_sn = item_sn )[0].item_now_user_workid
-                try:
-                    item_add_info = request.POST.get('item_add_info')
-                except:
-                    pass
-                try:
-                    item_list_info = request.POST.get('item_list_info')
-                except:
-                    pass
-                if action == '新增':
-                    try:
-                        test_item_add_info_exist = i_i.objects.filter( item_sn = item_sn ).filter(Q(item_info__icontains=item_add_info))[0]
-                        info = '{} ，编号/号码 {} 已存在！！'.format(item_sn, item_add_info)
-                    except:
-                        try:
-                            Lmj_ii =  i_i.objects.filter( item_sn = item_sn )[0]
-                            item_pass_info = Lmj_ii.item_info
-                            Lmj_info_list = Lmj_ii.item_info.replace('[', '').replace(']', '').replace("'","").replace(' ','')
-                            Lmj_info_list_new = Lmj_info_list.split(',')
-                            Lmj_info_list_new.append(item_add_info)
-                            try:
-                                Lmj_info_list_new.remove('')
-                            except:
-                                pass
-                            Lmj_ii.item_info = Lmj_info_list_new
-                        except Exception as e:
-                            print('首次新增该物品：',e)
-                            Lmj_info_list = [item_add_info]
-                            Lmj_ii.item_info = Lmj_info_list
-                        info = '{} ，编号/号码 {} 已添加'.format(item_sn, item_add_info)
-                        Lmj_ii.save()
-                        item_change_info = Lmj_ii.item_info
-                        s = i_c_i( item_change_date = Mod_Date, item_name = item_name, 
-                        item_sn = item_sn, item_pass_user = item_now_user ,item_now_user = item_now_user,
-                        item_now_user_workid = item_now_user_workid, item_change_info = item_change_info, item_pass_info = item_pass_info, change_info_user = name, del_item_info = item_list_info)
-                        s.save()
-                if action == '删除':
-                    try:
-                        Lmj_ii =  i_i.objects.filter( item_sn = item_sn )[0]
-                        item_pass_info = Lmj_ii.item_info
-                        Lmj_info_list = Lmj_ii.item_info.replace('[', '').replace(']', '').replace("'","").replace(' ','')
-                        Lmj_info_list_new = Lmj_info_list.split(',')
-                        try:
-                            Lmj_info_list_new.remove(item_list_info)
-                        except Exception as e:
-                            print('删除编号{}异常：'.format(item_list_info),e)
-                        try:
-                            Lmj_info_list_new.remove('')
-                        except:
-                            pass
-                        Lmj_ii.item_info = Lmj_info_list_new
-                        Lmj_ii.save()
-                        item_change_info = Lmj_ii.item_info
-                        info = '{} ，编号/号码 {} 已删除'.format(item_sn, item_add_info)
-                        s = i_c_i( item_change_date = Mod_Date, item_name = item_name, 
-                        item_sn = item_sn, item_pass_user = item_now_user ,item_now_user = item_now_user,
-                        item_now_user_workid = item_now_user_workid, item_change_info = item_change_info, item_pass_info = item_pass_info, change_info_user = name, add_item_info = item_add_info)
-                        s.save()
-                    except Exception as e:
-                        print('{}删除过程中出现异常：'.format(item_list_info),e)
-                Lmj_info_list = i_i.objects.filter( item_sn = item_sn )[0].item_info
-                Item_Info_Data = {'Item_Info': {'name': name,
-                                    'Lmj_info_list': Lmj_info_list,
-                                    'info':info}}
-                return render(request, 'Kpi/showedititeminfo.html', Item_Info_Data)
-        except Exception as e:
-            print(e)    
-                    
-
 
 def Moditem(request):
     if request.session.get('is_login', None):
@@ -433,7 +371,7 @@ def Moditem(request):
                 ItemDetailData = ItemDetailDataView.getItemDetailData()
                 ItemDetailData['userinfo']['info'] = info
                 ItemDetailData['userinfo']['Lmj_info_list'] = Lmj_ii.item_info
-                print(type(ItemDetailData['userinfo']['Lmj_info_list']))
+                #print(type(ItemDetailData['userinfo']['Lmj_info_list']))
                 return render(request, 'Kpi/showedititeminfo.html', ItemDetailData)
             if action == '删除':
                 item_list_info = request.POST.get('item_list_info')

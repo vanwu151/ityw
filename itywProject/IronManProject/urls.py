@@ -44,7 +44,6 @@ urlpatterns = [
     path('searchitemstock/', views.searchitemstock),
     path('EditItemlogin/', views.EditItemlogin),
     path('EditItemloginInfo/', views.EditItemloginInfo),
-    path('AddLmjItem/', views.AddLmjItem),
     path('admin/', admin.site.urls),
     # path('PageFunc/', views.PageFunc),
     url(r'^static/(?P<path>.*)$', static.serve,
